@@ -27,16 +27,19 @@ This application demonstrates a production-grade implementation of a data query 
 ## Architecture Highlights
 
 ### State Management
+
 - Zustand store for global application state
 - Seeded mock data generation for consistent SSR/client hydration
 - Automatic filter application on query changes
 
 ### Performance Optimizations
+
 - Blocking script for instant theme application
 - `disableTransitionOnChange` to prevent layout thrashing
 - Memoized data generation to avoid unnecessary renders
 
 ### Component Design
+
 - Reusable UI primitives following composition patterns
 - Separation of concerns (data/presentation/logic)
 - Custom hooks for cross-cutting functionality
