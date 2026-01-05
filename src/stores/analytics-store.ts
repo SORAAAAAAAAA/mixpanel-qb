@@ -1,51 +1,64 @@
-import { createStore } from 'zustand/vanilla';
+import { create } from 'zustand';
 import { RuleGroupType } from 'react-querybuilder';
 import jsonLogic from 'json-logic-js';
-import { AnalyticsState, MixpanelProfile } from '@/types/analytics';
-import { formatQuery } from 'react-querybuilder'; 
+import { MixpanelProfile } from '@/types/analytics';
+import { formatQuery } from 'react-querybuilder';
+import { generateUsers } from '@/data/mockFactory';
 
-
-export interface AnalyticsStore extends AnalyticsState {
-  query: RuleGroupType; // The raw query object from the UI
-  setQuery: (query: RuleGroupType) => void;
+export interface AnalyticsStore {
+  allUsers: MixpanelProfile[];
+  filteredUsers: MixpanelProfile[];
+  query: RuleGroupType;
   
-  // The Selector: Returns only users matching the query
-  getFilteredUsers: () => MixpanelProfile[]; 
+  // Actions
+  setQuery: (query: RuleGroupType) => void;
+  initializeUsers: (users: MixpanelProfile[]) => void;
+  applyFilters: () => void;
 }
 
 // Initial empty query
 const initialQuery: RuleGroupType = { combinator: 'and', rules: [] };
 
-export const createAnalyticsStore = (initState: AnalyticsState) => {
-  return createStore<AnalyticsStore>()((set, get) => ({
-    ...initState,
-    query: initialQuery,
+export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
+  allUsers: generateUsers(100),
+  filteredUsers: generateUsers(100),
+  query: initialQuery,
 
-    setQuery: (q) => set({ query: q }),
+  setQuery: (query) => {
+    set({ query });
+    get().applyFilters();
+  },
 
-    getFilteredUsers: () => {
-      const state = get();
-      const { query, allUsers } = state;
-      
-     
-      if (query.rules.length === 0) return allUsers;
+  initializeUsers: (users) => {
+    set({ allUsers: users, filteredUsers: users });
+  },
 
-      // Convert the Query Builder object to Logic
-      // We import formatQuery here to convert to JsonLogic format
-      
-      const logic = formatQuery(query, 'jsonlogic');
-
-      // Filter the array
-      return allUsers.filter((user) => {
-        // We map flat fields to the user structure for the filter to work easily
-        const data = {
-          age: user.customAttributes.age,
-          credit_score: user.customAttributes.credit_score,
-          country: user.$country_code,
-          os: user.$os
-        };
-        return jsonLogic.apply(logic, data);
-      });
+  applyFilters: () => {
+    const { query, allUsers } = get();
+    
+    // If no filters, show all users
+    if (query.rules.length === 0) {
+      set({ filteredUsers: allUsers });
+      return;
     }
-  }));
-};
+
+    // Convert the Query Builder object to JsonLogic format
+    const logic = formatQuery(query, 'jsonlogic');
+
+    // Filter the array
+    const filtered = allUsers.filter((user) => {
+      // Map flat fields to the user structure for filtering
+      const data = {
+        age: user.customAttributes.age,
+        credit_score: user.customAttributes.credit_score,
+        country: user.$country_code,
+        os: user.$os,
+        name: user.$name,
+        email: user.$email,
+      };
+      return jsonLogic.apply(logic, data);
+    });
+
+    set({ filteredUsers: filtered });
+  },
+}));

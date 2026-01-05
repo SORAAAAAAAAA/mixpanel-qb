@@ -19,7 +19,7 @@ export function ModeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="inline-flex items-center justify-center h-10 w-10 rounded-lg border border-border/50 bg-muted/50 hover:bg-muted transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 focus:ring-offset-background group"
+      className="relative inline-flex items-center justify-center h-10 w-10 rounded-lg border border-border/50 bg-muted/50 hover:bg-muted transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-background group"
       role="switch"
       aria-checked={theme === "dark"}
       aria-label="Toggle theme"

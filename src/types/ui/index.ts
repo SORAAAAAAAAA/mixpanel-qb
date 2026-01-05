@@ -12,7 +12,7 @@ export interface CreditScoreProps {
   score: number;
 }
 
-export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'icon' | 'outline';
 
 export interface IconProps {
   name: keyof typeof Icons
