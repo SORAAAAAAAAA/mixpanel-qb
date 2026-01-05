@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { MixpanelProfile } from '@/types/index';
+import { MixpanelProfile } from '@/types/analytics/index';
 
 // A factory function that creates ONE random user
 export const createRandomUser = (): MixpanelProfile => {

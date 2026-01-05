@@ -1,3 +1,5 @@
+import { RuleGroupType } from 'react-querybuilder';
+
 export interface MixpanelProfile {
   
   distinctId: string;
@@ -21,3 +23,29 @@ export interface MixpanelProfile {
     updated_at?: string;
   };
 }
+
+export interface MixpanelEvent {
+  id: string;
+  eventName: string;
+  distinctId: string; // Foreign key linking to Profile
+  timestamp: string;
+  properties: Record<string, string>;
+}
+
+export interface AnalyticsState {
+  allUsers: MixpanelProfile[];
+  events: MixpanelEvent[];
+  currentUser: MixpanelProfile | null;
+  query: RuleGroupType;
+}
+
+export interface AnalyticsActions {
+
+  setQuery: (query: RuleGroupType) => void;
+  setCurrentUser: (user: MixpanelProfile | null) => void;
+  addEvent: (event: MixpanelEvent) => void;
+
+  getFilteredUsers: () => MixpanelProfile[];
+}
+
+export type AnalyticsStore = AnalyticsState & AnalyticsActions;
