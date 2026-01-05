@@ -25,7 +25,7 @@ export function AppSidebar() {
         <SidebarGroup>
           
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-2">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton asChild tooltip={item.label}>
