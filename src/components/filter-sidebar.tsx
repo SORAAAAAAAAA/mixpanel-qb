@@ -5,30 +5,29 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { SidebarTrigger } from "@/components/ui/sidebar"
 import { menuItems } from "@/lib/constants"
-import { footerItems } from "@/lib/constants"
 
-export function AppSidebar() {
+
+export function FilterSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="flex-1 bg-background">
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
-          
+
           <SidebarGroupContent>
             <SidebarMenu className="gap-2">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton asChild tooltip={item.label}>
                     <a href={item.href}>
-                      <item.icon/>
+                      <item.icon />
                       <span>{item.label}</span>
                     </a>
                   </SidebarMenuButton>
@@ -38,17 +37,8 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="flex flex-col px-2 py-4 group-data-[state=expanded]:border-t group-data-[state=expanded]:flex-row group-data-[state=expanded]:items-center group-data-[state=expanded]:justify-between">
-        <div className="flex flex-col group-data-[state=expanded]:flex-row gap-2">
-          {footerItems.map((item, index) => (
-            <SidebarMenuButton  key={index}>
-              <a href={item.href}>
-                <item.icon />
-              </a>
-            </SidebarMenuButton>
-          ))}
-        </div>
-        <div className="border-t group-data-[state=expanded]:border-t-0 mt-2 group-data-[state=expanded]:mt-0 pt-2 group-data-[state=expanded]:pt-0">
+      <SidebarFooter>
+        <div className="border-t">
           <SidebarTrigger className="w-8 h-8 flex items-center justify-center" />
         </div>
       </SidebarFooter>

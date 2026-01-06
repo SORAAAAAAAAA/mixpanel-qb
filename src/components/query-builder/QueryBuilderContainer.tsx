@@ -8,13 +8,13 @@ import {
 
 export function QueryBuilderContainer({ children }: { children: React.ReactNode }) {
   return (
-    <Card className="w-full bg-[var(--background)]]">    
-        <CardHeader>
-            <CardTitle className="text-2xl">All Users</CardTitle>
-        </CardHeader>
-        <CardContent className="h-full p-0 overflow-hidden">
-            {children}
-        </CardContent>
+    <Card className="w-full bg-background">
+      <CardHeader>
+        <CardTitle className="text-2xl">All Users</CardTitle>
+      </CardHeader>
+      <CardContent className="h-full p-0 overflow-hidden">
+        {children}
+      </CardContent>
     </Card>
   )
 }

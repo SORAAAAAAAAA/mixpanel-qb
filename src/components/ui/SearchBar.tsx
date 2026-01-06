@@ -2,11 +2,15 @@ import { Icon } from "@/components/ui/Icons";
 
 interface SearchBarProps {
     placeholder?: string;
+    className?: string | undefined;
+    disableExpand?: boolean | undefined;
 }
 
-export function SearchBar({ placeholder }: SearchBarProps) {
+export function SearchBar({ placeholder, className, disableExpand }: SearchBarProps) {
+    const baseClass = `flex items-center bg-[var(--card)] rounded-md px-3 py-2 border hover:border-[var(--primary)] ${!disableExpand ? 'focus-within:border-[var(--primary)] focus-within:w-80' : 'focus-within:border-[var(--primary)]'} w-48 transition-all duration-300`;
+
   return (
-    <div className="flex items-center bg-[var(--card)] rounded-md px-3 py-2 border hover:border-[var(--primary)] focus-within:border-[var(--primary)] focus-within:w-80 w-48 transition-all duration-300">
+    <div className={`${baseClass} ${className}`}>
       <Icon name="Search" className="text-gray-500 h-5 w-5 text-foreground mr-2 flex-shrink-0" />
       <input
         type="text"
