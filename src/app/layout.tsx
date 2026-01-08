@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SidebarProvider} from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
@@ -47,24 +47,24 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}
       >
         <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-            storageKey="theme"
-          >
-            <div className="flex flex-col h-screen">
-              <SidebarProvider>
-                <AppSidebar />
-                <main className="flex-1 overflow-y-auto transition-all duration-200 ease-linear">
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          storageKey="theme"
+        >
+          <div className="flex flex-col h-screen">
+            <SidebarProvider defaultOpen={false}>
+              <AppSidebar />
+              <main className="flex-1 overflow-y-auto transition-all duration-200 ease-linear">
 
-                  <div className="p-4 w-full">
-                    {children}
-                  </div>
-                </main>
-              </SidebarProvider>
-            </div>
-          </ThemeProvider>
+                <div className="p-4 w-full">
+                  {children}
+                </div>
+              </main>
+            </SidebarProvider>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

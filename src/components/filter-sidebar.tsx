@@ -10,11 +10,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar"
-import { menuItems } from "@/lib/constants"
+import { propertyMenuItems } from "@/lib/constants"
 
 
 export function FilterSidebar() {
+  const { state } = useSidebar();
+  const isExpanded = state === 'expanded';
+
   return (
     <Sidebar collapsible="icon" className="flex-1 bg-background">
       <SidebarHeader />
@@ -23,13 +27,11 @@ export function FilterSidebar() {
 
           <SidebarGroupContent>
             <SidebarMenu className="gap-2">
-              {menuItems.map((item) => (
+              {propertyMenuItems.map((item) => (
                 <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton asChild tooltip={item.label}>
-                    <a href={item.href}>
-                      <item.icon />
-                      <span>{item.label}</span>
-                    </a>
+                  <SidebarMenuButton tooltip={item.label}>
+                    <item.icon />
+                    <span>{item.label}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -37,10 +39,8 @@ export function FilterSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <div className="border-t">
-          <SidebarTrigger className="w-8 h-8 flex items-center justify-center" />
-        </div>
+      <SidebarFooter className={`border-t flex flex-row w-full items-center ${isExpanded ? 'justify-end' : 'justify-center'}`}>
+        <SidebarTrigger className="w-8 h-8 flex items-center" />
       </SidebarFooter>
     </Sidebar>
   )

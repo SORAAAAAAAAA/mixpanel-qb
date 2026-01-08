@@ -8,10 +8,10 @@ faker.seed(12345);
 export const createRandomUser = (): MixpanelProfile => {
   // Create a date in early January 2024 to match the Mixpanel screenshot
   const jan2024 = new Date('2024-01-04');
-  
+
   return {
     distinctId: faker.string.uuid(),
-    
+
     // Random standard properties
     $name: faker.person.fullName(),
     $email: faker.internet.email(),
@@ -19,7 +19,7 @@ export const createRandomUser = (): MixpanelProfile => {
     $created: jan2024.toISOString(),
     $city: faker.location.city(),
     $region: faker.location.state(),
-    $country_code: faker.location.countryCode(),
+    $country_code: faker.location.country(),
     $os: faker.helpers.arrayElement(['Android', 'iOS', 'Windows', 'MacOS']),
 
     // Random custom attributes

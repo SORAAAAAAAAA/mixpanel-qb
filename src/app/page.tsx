@@ -4,6 +4,8 @@ import Header from '@/components/Header';
 import { ResultsTable } from '@/components/results/ResultsTable';
 import { useAnalyticsStore } from '@/stores/analytics-store';
 import QueryBuilder from '@/components/query-builder/QueryBuilder';
+import Button from '@/components/ui/Button';
+import { ButtonCard } from '@/components/ui/ButtonCard';
 
 
 export default function Home() {
@@ -20,6 +22,15 @@ export default function Home() {
           {/* Filter Section */}
 
           <QueryBuilder />
+
+          <div className="flex justify-end gap-2">
+            <Button variant="secondary" size="md">
+              <ButtonCard label="Clear all" />
+            </Button>
+            <Button variant="primary" size="md">
+              <ButtonCard label="Save as" />
+            </Button>
+          </div>
 
           {/* Results Table */}
           <div className="flex-1 overflow-hidden rounded-xl">

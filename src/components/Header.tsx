@@ -12,7 +12,7 @@ interface HeaderProps {
 
 export default function Header({ userCount = 100000, visibleColumnsCount = 7 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-50 flex flex-col w-full border-b border-border pb-4 bg-background">
+    <header className="top-0 z-50 flex flex-col w-full bg-background">
       {/* Top row: Title and Mode Toggle */}
       <div className="flex items-center justify-between px-6 py-4">
         <h1 className="text-2xl font-bold text-foreground">Users</h1>
@@ -33,18 +33,18 @@ export default function Header({ userCount = 100000, visibleColumnsCount = 7 }: 
 
         {/* Right side: Action buttons */}
         <div className="flex items-center gap-2">
-          <Button onClick={() => alert('Hide Filter')} variant="secondary" size="sm">
-            <ButtonCard iconName="Filter" label="Hide Filter" />
+          <Button onClick={() => alert('Hide Filter')} variant="secondary" size="md">
+            <ButtonCard iconName="FunnelPlus" label="Hide Filter" />
           </Button>
 
-          <Button onClick={() => alert('Edit Columns')} variant="secondary" size="sm">
+          <Button onClick={() => alert('Edit Columns')} variant="secondary" size="md">
             <ButtonCard iconName="Pencil" label={`Edit Columns • ${visibleColumnsCount}`} />
           </Button>
 
-          <Button 
-            onClick={() => alert('Add/Edit Profile')} 
-            variant="secondary" 
-            size="sm"
+          <Button
+            onClick={() => alert('Add/Edit Profile')}
+            variant="secondary"
+            size="md"
             disabled={true}
           >
             <ButtonCard iconName="SquareUserRound" label="Add/Edit Profile" />
