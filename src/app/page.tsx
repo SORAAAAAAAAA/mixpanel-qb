@@ -24,10 +24,10 @@ export default function Home() {
           <QueryBuilder />
 
           <div className="flex justify-end gap-2">
-            <Button variant="secondary" size="md">
+            <Button variant="secondary" size="sm">
               <ButtonCard label="Clear all" />
             </Button>
-            <Button variant="primary" size="md">
+            <Button variant="primary" size="sm">
               <ButtonCard label="Save as" />
             </Button>
           </div>

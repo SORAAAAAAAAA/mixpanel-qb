@@ -24,32 +24,35 @@ export default function QueryBuilder() {
         <DropdownMenuTrigger asChild>
           <Button
             variant="secondary"
-            size="md"
-            className="ml-5 hover:bg-[#7b80ff]/10  data-[state=open]:bg-[#7b80ff]/10 dark:data-[state=open]:bg-[#7b80ff]/15"
+            size="sm"
+            className="ml-5 hover:bg-[#7b80ff]/10 data-[state=open]:bg-[#7b80ff]/10 data-[state=open]:text-[#4f44e0] dark:data-[state=open]:bg-[#7b80ff]/15 dark:data-[state=open]:text-[#7b80ff]"
           >
             <ButtonCard iconName="Plus" label="Filter" />
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="flex flex-col p-2 w-200 h-110 p-2 bg-background overflow-hidden" align="start">
-          <SearchBar placeholder="Search..." className="w-full" disableExpand={true} />
+        <DropdownMenuContent className="flex flex-col p-2 w-200 h-[28rem] bg-background overflow-hidden" align="start">
+          <SearchBar placeholder="Search..." className="w-full mb-2" disableExpand={true} />
 
-          <SidebarProvider
-            defaultOpen={false}
-            style={{ '--sidebar-width': '11.25rem' } as React.CSSProperties}
-          >
-            <div className="flex flex-1 w-full overflow-hidden relative">
-              <FilterSidebar />
+          <div className="flex-1 w-full min-h-0 relative">
+            <SidebarProvider
+              defaultOpen={false}
+              style={{ '--sidebar-width': '11.25rem' } as React.CSSProperties}
+              className="w-full h-full"
+            >
+              <div className="flex flex-1 w-full h-full overflow-hidden relative min-h-0">
+                <FilterSidebar />
 
-              <div className="flex-1 flex flex-row min-w-0">
-                <PropertyList
-                  hoveredProperty={hoveredProperty}
-                  onHoverProperty={setHoveredProperty}
-                />
-                <PropertyDetails property={hoveredProperty} />
+                <div className="flex-1 flex flex-row min-w-0">
+                  <PropertyList
+                    hoveredProperty={hoveredProperty}
+                    onHoverProperty={setHoveredProperty}
+                  />
+                  <PropertyDetails property={hoveredProperty} />
+                </div>
               </div>
-            </div>
-          </SidebarProvider>
+            </SidebarProvider>
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
     </QueryBuilderContainer>

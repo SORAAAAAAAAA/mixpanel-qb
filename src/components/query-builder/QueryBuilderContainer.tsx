@@ -24,10 +24,10 @@ function DraggableCard({ children }: { children: React.ReactNode }) {
   return (
     <Card
       ref={setNodeRef}
-      className="w-full bg-background h-full transition-shadow py-2 gap-2"
+      className="flex flex-col pt-0  pb-2 gap-1 w-full bg-background transition-shadow"
       style={style}
     >
-      <CardHeader className="flex flex-row items-center space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center px-2 p-0">
         <Button
           {...listeners}
           {...attributes}
@@ -38,7 +38,7 @@ function DraggableCard({ children }: { children: React.ReactNode }) {
         </Button>
         <CardTitle className="text-muted-foreground text-sm">ALL USERS</CardTitle>
       </CardHeader>
-      <CardContent className="flex">
+      <CardContent className="flex-1 flex items-center px-2 ml-5">
         {children}
       </CardContent>
     </Card>
@@ -62,7 +62,7 @@ export function QueryBuilderContainer({ children }: { children: React.ReactNode 
   // Render without DndContext during SSR
   if (!isMounted) {
     return (
-      <div className="w-full h-[15%]">
+      <div className="w-full">
         <DraggableCard>{children}</DraggableCard>
       </div>
     )
@@ -70,7 +70,7 @@ export function QueryBuilderContainer({ children }: { children: React.ReactNode 
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className="w-full h-[15%]" style={{ transform: `translate(${position.x}px, ${position.y}px)` }}>
+      <div className="w-full" style={{ transform: `translate(${position.x}px, ${position.y}px)` }}>
         <DraggableCard>{children}</DraggableCard>
       </div>
     </DndContext>

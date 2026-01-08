@@ -33,18 +33,18 @@ export default function Header({ userCount = 100000, visibleColumnsCount = 7 }: 
 
         {/* Right side: Action buttons */}
         <div className="flex items-center gap-2">
-          <Button onClick={() => alert('Hide Filter')} variant="secondary" size="md">
+          <Button onClick={() => alert('Hide Filter')} variant="secondary" size="sm">
             <ButtonCard iconName="FunnelPlus" label="Hide Filter" />
           </Button>
 
-          <Button onClick={() => alert('Edit Columns')} variant="secondary" size="md">
+          <Button onClick={() => alert('Edit Columns')} variant="secondary" size="sm">
             <ButtonCard iconName="Pencil" label={`Edit Columns • ${visibleColumnsCount}`} />
           </Button>
 
           <Button
             onClick={() => alert('Add/Edit Profile')}
             variant="secondary"
-            size="md"
+            size="sm"
             disabled={true}
           >
             <ButtonCard iconName="SquareUserRound" label="Add/Edit Profile" />
