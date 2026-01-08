@@ -38,7 +38,7 @@ function DraggableCard({ children }: { children: React.ReactNode }) {
         </Button>
         <CardTitle className="text-muted-foreground text-sm">ALL USERS</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 flex items-center px-2 ml-5">
+      <CardContent className="flex flex-col gap-2 px-2 ml-5">
         {children}
       </CardContent>
     </Card>

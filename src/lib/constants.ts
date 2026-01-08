@@ -36,7 +36,7 @@ export const propertyMenuItems = [
   { icon: ALargeSmall, label: "All" },
   { icon: UserRoundCog, label: "User" },
   { icon: MousePointerClick, label: "Users Who did..." },
-  { icon: Calculator, label: "Computet" },
+  { icon: Calculator, label: "Computed" },
   { icon: Users, label: "Cohorts" },
 ]
 

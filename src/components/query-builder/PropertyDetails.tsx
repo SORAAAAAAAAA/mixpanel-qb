@@ -32,8 +32,14 @@ export function PropertyDetails({ property }: PropertyDetailsProps) {
                     {property.category === "user" && (
                         <span className="text-muted-foreground text-xs">User ▸</span>
                     )}
+                    {property.category === "computed" && (
+                        <span className="text-muted-foreground text-xs">Computed ▸</span>
+                    )}
                     {property.eventName && (
                         <span className="text-muted-foreground text-xs">Event ▸</span>
+                    )}
+                    {property.cohortName && (
+                        <span className="text-muted-foreground text-xs">Cohort ▸</span>
                     )}
                     <span className="font-medium text-sm">{property.label}</span>
                 </div>

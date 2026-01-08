@@ -1,17 +1,27 @@
 'use client';
 
+import { useEffect } from 'react';
 import Header from '@/components/Header';
 import { ResultsTable } from '@/components/results/ResultsTable';
 import { useAnalyticsStore } from '@/stores/analytics-store';
 import QueryBuilder from '@/components/query-builder/QueryBuilder';
 import Button from '@/components/ui/Button';
 import { ButtonCard } from '@/components/ui/ButtonCard';
+import { generateUsers } from '@/data/mockFactory';
 
 
 export default function Home() {
   const allUsers = useAnalyticsStore((state) => state.allUsers);
   const filteredUsers = useAnalyticsStore((state) => state.filteredUsers);
   const setQuery = useAnalyticsStore((state) => state.setQuery);
+  const initializeUsers = useAnalyticsStore((state) => state.initializeUsers);
+
+  // Generate users on client-side mount to avoid hydration mismatch
+  useEffect(() => {
+    if (allUsers.length === 0) {
+      initializeUsers(generateUsers(100));
+    }
+  }, [allUsers.length, initializeUsers]);
 
   return (
     <div className="flex h-screen w-full flex-col bg-background">

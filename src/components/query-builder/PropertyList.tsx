@@ -76,6 +76,9 @@ export function PropertyList({ hoveredProperty, onHoverProperty, onSelectPropert
                         {property.eventName && (
                             <span className="text-muted-foreground mr-1 text-[10px]">Event ▸</span>
                         )}
+                        {property.cohortName && (
+                            <span className="text-muted-foreground mr-1 text-[10px]">In Cohort ▸</span>
+                        )}
                         <span>{property.label}</span>
                     </DropdownMenuItem>
                 ))}
