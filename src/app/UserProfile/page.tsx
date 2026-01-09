@@ -1,12 +1,13 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAnalyticsStore } from '@/stores/analytics-store';
 import { ProfileHeader } from "@/components/user-profile/ProfileHeader";
 import { UserIdentityCard, UserPropertiesCard, UserProperty } from "@/components/user-profile/UserCard";
 import { ProfileSidebar, ProfileContent, ActivityFeed } from "@/components/user-profile/UserGrid";
 
-export default function UserProfilePage() {
+function UserProfileContent() {
     const searchParams = useSearchParams();
     const userId = searchParams.get('id');
     const { allUsers } = useAnalyticsStore();
@@ -100,5 +101,17 @@ export default function UserProfilePage() {
                 </ProfileContent>
             </div>
         </div>
+    );
+}
+
+export default function UserProfilePage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center h-screen bg-background text-foreground">
+                Loading profile...
+            </div>
+        }>
+            <UserProfileContent />
+        </Suspense>
     );
 }
