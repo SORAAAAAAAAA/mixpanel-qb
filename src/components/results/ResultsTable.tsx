@@ -1,9 +1,11 @@
 'use client';
 
 import { ResultsTableProps } from '@/types/results';
-import { initialColumns } from './columns';
+import { allColumnDefinitions } from './columns';
 import { useColumnResize } from '@/hooks/useColumnResize';
 import { useColumnReorder } from '@/hooks/useColumnReorder';
+import { useAnalyticsStore } from '@/stores/analytics-store';
+import React, { useMemo } from 'react';
 import { SortableHeader } from './SortableHeader';
 import { ResizableCell } from './ResizableCell';
 import { renderCellContent } from './cells';
@@ -11,6 +13,16 @@ import { useRouter } from 'next/navigation';
 
 export function ResultsTable({ users }: ResultsTableProps) {
   const router = useRouter();
+  const visibleColumns = useAnalyticsStore((state) => state.visibleColumns);
+  const setVisibleColumns = useAnalyticsStore((state) => state.setVisibleColumns);
+
+  // Derive column objects from visible IDs, preserving order
+  const currentColumns = useMemo(() => {
+    return visibleColumns
+      .map((id) => allColumnDefinitions.find((col) => col.id === id))
+      .filter((col): col is typeof allColumnDefinitions[0] => !!col);
+  }, [visibleColumns]);
+
   const {
     columns,
     isMounted,
@@ -20,22 +32,24 @@ export function ResultsTable({ users }: ResultsTableProps) {
     SortableContext,
     horizontalListSortingStrategy,
     closestCenter,
-  } = useColumnReorder(initialColumns);
+  } = useColumnReorder(currentColumns, (newCols) => {
+    setVisibleColumns(newCols.map(c => c.id));
+  });
 
-  const { columnWidths, handleResize, isResizing, resizeX, isHovering, hoverX, handleHoverStart, handleHoverEnd } = useColumnResize(initialColumns);
+  const { columnWidths, handleResize, isResizing, resizeX, isHovering, hoverX, handleHoverStart, handleHoverEnd } = useColumnResize(currentColumns);
 
   // Render without DndContext during SSR to prevent hydration mismatch
   if (!isMounted) {
     return (
       <div className="w-full h-full overflow-auto border border-border rounded-lg">
-        <table className="w-full border-collapse">
+        <table className="w-full border-separate border-spacing-0">
           <thead className="bg-card sticky top-0 z-10">
-            <tr className="border-b border-border">
+            <tr>
               {columns.map((column) => (
                 <th
                   key={column.id}
                   style={{ width: `${columnWidths[column.id]}px` }}
-                  className="relative text-left px-4 py-3 text-sm font-medium text-muted-foreground"
+                  className="relative text-left px-4 py-3 text-sm font-medium text-muted-foreground border-b border-border"
                 >
                   <div className="flex items-center gap-2">
                     <span>{column.label}</span>
@@ -49,14 +63,14 @@ export function ResultsTable({ users }: ResultsTableProps) {
               <tr
                 key={user.distinctId}
                 onClick={() => router.push(`/UserProfile?id=${user.distinctId}`)}
-                className={`border-b border-border hover:bg-muted/50 transition-colors cursor-pointer ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-card/50'
+                className={`hover:bg-muted/50 transition-colors cursor-pointer ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-card/50'
                   }`}
               >
                 {columns.map((column) => (
                   <td
                     key={`${user.distinctId}-${column.id}`}
                     style={{ width: `${columnWidths[column.id]}px` }}
-                    className="px-4 py-3 text-sm text-foreground"
+                    className="px-4 py-3 text-sm text-foreground border-b border-border"
                   >
                     {renderCellContent(column, user)}
                   </td>
@@ -83,13 +97,13 @@ export function ResultsTable({ users }: ResultsTableProps) {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <table className="w-full border-collapse">
+        <table className="w-full border-separate border-spacing-0">
           <thead className="bg-card sticky top-0 z-10">
             <SortableContext
               items={columns.map((col) => col.id)}
               strategy={horizontalListSortingStrategy}
             >
-              <tr className="border-b border-border">
+              <tr>
                 {columns.map((column, index) => (
                   <SortableHeader
                     key={column.id}
@@ -109,7 +123,7 @@ export function ResultsTable({ users }: ResultsTableProps) {
               <tr
                 key={user.distinctId}
                 onClick={() => router.push(`/UserProfile?id=${user.distinctId}`)}
-                className={`border-b border-border hover:bg-muted/50 transition-colors cursor-pointer ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-card/50'
+                className={`hover:bg-muted/50 transition-colors cursor-pointer ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-card/50'
                   }`}
               >
                 {columns.map((column, index) => (

@@ -4,9 +4,11 @@ interface SearchBarProps {
   placeholder?: string;
   className?: string | undefined;
   disableExpand?: boolean | undefined;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export function SearchBar({ placeholder, className, disableExpand }: SearchBarProps) {
+export function SearchBar({ placeholder, className, disableExpand, value, onChange }: SearchBarProps) {
   const baseClass = `flex items-center bg-[var(--card)] rounded-md px-3 py-1.5 border hover:border-[var(--primary)] ${!disableExpand ? 'focus-within:border-[var(--primary)] focus-within:w-80' : 'focus-within:border-[var(--primary)]'} w-48 transition-all duration-300`;
 
   return (
@@ -16,6 +18,9 @@ export function SearchBar({ placeholder, className, disableExpand }: SearchBarPr
         type="text"
         placeholder={placeholder || "Search..."}
         className="flex-grow outline-none bg-transparent"
+        value={value}
+        onChange={(e) => onChange?.(e.target.value)}
+        onKeyDown={(e) => e.stopPropagation()}
       />
     </div>
   );

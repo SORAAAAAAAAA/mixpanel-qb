@@ -4,6 +4,8 @@ import Button from '@/components/ui/Button';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { ButtonCard } from '@/components/ui/ButtonCard';
 import { SearchBar } from '@/components/ui/SearchBar';
+import { EditColumns } from '@/components/results/EditColumns';
+import { useAnalyticsStore } from '@/stores/analytics-store';
 
 interface HeaderProps {
   userCount?: number;
@@ -18,6 +20,9 @@ export default function Header({
   onToggleFilter,
   isFilterVisible = true
 }: HeaderProps) {
+  const searchQuery = useAnalyticsStore((state) => state.searchQuery);
+  const setSearchQuery = useAnalyticsStore((state) => state.setSearchQuery);
+
   return (
     <header className="top-0 z-50 flex flex-col w-full bg-background">
       {/* Top row: Title and Mode Toggle */}
@@ -47,9 +52,7 @@ export default function Header({
             />
           </Button>
 
-          <Button onClick={() => alert('Edit Columns')} variant="secondary" size="sm">
-            <ButtonCard label="Edit Columns" />
-          </Button>
+          <EditColumns />
 
           <Button
             onClick={() => alert('Add/Edit Profile')}
@@ -60,7 +63,11 @@ export default function Header({
             <ButtonCard iconName="SquareUserRound" label="Add/Edit Profile" />
           </Button>
 
-          <SearchBar placeholder="Search profiles" />
+          <SearchBar
+            placeholder="Search profiles"
+            value={searchQuery}
+            onChange={setSearchQuery}
+          />
         </div>
       </div>
     </header>

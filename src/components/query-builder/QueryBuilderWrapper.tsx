@@ -41,7 +41,7 @@ export function QueryBuilderWrapper({ onAddRule }: QueryBuilderWrapperProps) {
                     operatorSelector: MixpanelOperatorSelector,
                     valueEditor: MixpanelValueEditor,
                     removeRuleAction: MixpanelRemoveButton,
-                    // Hide default add buttons - we use custom property dropdown
+                    // Hide default add buttons - use custom property dropdown
                     addRuleAction: () => null,
                     addGroupAction: () => null,
                 }}

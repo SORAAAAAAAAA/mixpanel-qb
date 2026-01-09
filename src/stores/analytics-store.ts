@@ -57,9 +57,14 @@ export interface AnalyticsStore {
   allUsers: MixpanelProfile[];
   filteredUsers: MixpanelProfile[];
   query: RuleGroupType;
+  visibleColumns: string[];
+  searchQuery: string;
 
   // Actions
   setQuery: (query: RuleGroupType) => void;
+  setSearchQuery: (query: string) => void;
+  setVisibleColumns: (columnIds: string[]) => void;
+  toggleColumn: (columnId: string) => void;
   initializeUsers: (users: MixpanelProfile[]) => void;
   applyFilters: () => void;
   getSampleValue: (propertyId: string) => string;
@@ -67,16 +72,39 @@ export interface AnalyticsStore {
 
 // Initial empty query
 const initialQuery: RuleGroupType = { combinator: 'and', rules: [] };
+import { defaultVisibleColumnIds } from '@/components/results/columns';
+
+
 
 // Start with empty arrays - users will be generated client-side to avoid hydration mismatch
 export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
   allUsers: [],
   filteredUsers: [],
   query: initialQuery,
+  visibleColumns: defaultVisibleColumnIds,
+  searchQuery: '',
 
   setQuery: (query) => {
     set({ query });
     get().applyFilters();
+  },
+
+  setSearchQuery: (searchQuery) => {
+    set({ searchQuery });
+    get().applyFilters();
+  },
+
+  setVisibleColumns: (columnIds) => {
+    set({ visibleColumns: columnIds });
+  },
+
+  toggleColumn: (columnId) => {
+    const { visibleColumns } = get();
+    if (visibleColumns.includes(columnId)) {
+      set({ visibleColumns: visibleColumns.filter(id => id !== columnId) });
+    } else {
+      set({ visibleColumns: [...visibleColumns, columnId] });
+    }
   },
 
   initializeUsers: (users) => {
@@ -101,10 +129,10 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
   },
 
   applyFilters: () => {
-    const { query, allUsers } = get();
+    const { query, allUsers, searchQuery } = get();
 
-    // If no filters, show all users
-    if (query.rules.length === 0) {
+    // If no filters and no search, show all users
+    if (query.rules.length === 0 && !searchQuery) {
       set({ filteredUsers: allUsers });
       return;
     }
@@ -184,12 +212,26 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
         debugLogged = true;
       }
 
-      try {
-        return jsonLogic.apply(logic, data);
-      } catch (e) {
-        console.error('Filter error:', e);
-        return true; // Include user if filter fails
+      let matchesLogic = true;
+      if (query.rules.length > 0) {
+        try {
+          matchesLogic = jsonLogic.apply(logic, data);
+        } catch (e) {
+          console.error('Filter error:', e);
+          matchesLogic = true;
+        }
       }
+
+      let matchesSearch = true;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        matchesSearch =
+          (String(data['name'] || '').includes(q)) ||
+          (String(data['email'] || '').includes(q)) ||
+          (String(data['distinct-id'] || '').includes(q));
+      }
+
+      return matchesLogic && matchesSearch;
     });
 
     set({ filteredUsers: filtered });

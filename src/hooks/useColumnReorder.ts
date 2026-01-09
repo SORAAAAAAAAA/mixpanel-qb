@@ -29,8 +29,11 @@ interface UseColumnReorderReturn {
     closestCenter: typeof closestCenter;
 }
 
-export function useColumnReorder(initialColumns: Column[]): UseColumnReorderReturn {
-    const [columns, setColumns] = useState<Column[]>(initialColumns);
+export function useColumnReorder(
+    columns: Column[],
+    onReorder: (newColumns: Column[]) => void
+): UseColumnReorderReturn {
+    // const [columns, setColumns] = useState<Column[]>(initialColumns); 
     const [isMounted, setIsMounted] = useState(false);
 
     // Prevent hydration mismatch
@@ -53,16 +56,14 @@ export function useColumnReorder(initialColumns: Column[]): UseColumnReorderRetu
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
-            setColumns((items) => {
-                const oldIndex = items.findIndex((item) => item.id === active.id);
-                const newIndex = items.findIndex((item) => item.id === over.id);
-                return arrayMove(items, oldIndex, newIndex);
-            });
+            const oldIndex = columns.findIndex((item) => item.id === active.id);
+            const newIndex = columns.findIndex((item) => item.id === over.id);
+            onReorder(arrayMove(columns, oldIndex, newIndex)); // Call parent handler
         }
     };
 
     return {
-        columns,
+        columns, // Return passed columns
         isMounted,
         sensors,
         handleDragEnd,

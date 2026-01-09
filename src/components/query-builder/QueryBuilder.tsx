@@ -23,6 +23,7 @@ export default function QueryBuilder() {
   const [hoveredProperty, setHoveredProperty] = useState<FilterProperty | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<PropertyMenuCategory>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const query = useAnalyticsStore((state) => state.query);
   const setQuery = useAnalyticsStore((state) => state.setQuery);
@@ -52,11 +53,12 @@ export default function QueryBuilder() {
     setDropdownOpen(false); // Close the dropdown
   };
 
-  // Reset category when dropdown closes
+  // Reset category and search when dropdown closes
   const handleDropdownOpenChange = (open: boolean) => {
     setDropdownOpen(open);
     if (!open) {
       setSelectedCategory('all'); // Reset to "All" when closing
+      setSearchQuery(''); // Reset search
     }
   };
 
@@ -82,7 +84,13 @@ export default function QueryBuilder() {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent className="flex flex-col p-2 w-[700px] h-[28rem] bg-background overflow-hidden" align="start">
-          <SearchBar placeholder="Search..." className="w-full mb-2" disableExpand={true} />
+          <SearchBar
+            placeholder="Search properties..."
+            className="w-full mb-2"
+            disableExpand={true}
+            value={searchQuery}
+            onChange={setSearchQuery}
+          />
 
           <div className="flex-1 w-full min-h-0 relative">
             <SidebarProvider
@@ -102,6 +110,7 @@ export default function QueryBuilder() {
                     onHoverProperty={setHoveredProperty}
                     onSelectProperty={handlePropertySelect}
                     selectedCategory={selectedCategory}
+                    searchQuery={searchQuery}
                   />
                   <PropertyDetails property={hoveredProperty} />
                 </div>

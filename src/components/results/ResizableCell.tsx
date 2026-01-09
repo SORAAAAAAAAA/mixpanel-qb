@@ -6,7 +6,7 @@ export function ResizableCell({ column, columnWidth, isLast, onResize, onHoverSt
     return (
         <td
             style={{ width: `${columnWidth}px` }}
-            className="relative px-4 py-3 text-sm text-foreground"
+            className="relative px-4 py-3 text-sm text-foreground border-b border-border"
         >
             {children}
             {!isLast && (

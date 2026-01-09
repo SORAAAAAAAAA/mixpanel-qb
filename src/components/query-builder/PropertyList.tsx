@@ -16,6 +16,7 @@ interface PropertyListProps {
     onHoverProperty: (property: FilterProperty | null) => void;
     onSelectProperty?: (property: FilterProperty) => void;
     selectedCategory: PropertyMenuCategory;
+    searchQuery?: string;
 }
 
 /**
@@ -29,16 +30,29 @@ function filterByCategory(properties: FilterProperty[], category: PropertyMenuCa
     return properties.filter(p => p.category === category);
 }
 
+/**
+ * Filters properties based on search query.
+ */
+function filterBySearch(properties: FilterProperty[], query: string): FilterProperty[] {
+    if (!query) return properties;
+    const lowerQuery = query.toLowerCase();
+    return properties.filter(p =>
+        p.label.toLowerCase().includes(lowerQuery) ||
+        p.id.toLowerCase().includes(lowerQuery)
+    );
+}
+
 export function PropertyList({
     hoveredProperty,
     onHoverProperty,
     onSelectProperty,
     selectedCategory,
+    searchQuery = '',
 }: PropertyListProps) {
     const { recentPropertyIds, addRecentProperty } = useRecentPropertiesStore();
 
-    const recentProperties = filterByCategory(getRecentProperties(recentPropertyIds), selectedCategory);
-    const allProperties = filterByCategory(getAllProperties(), selectedCategory);
+    const recentProperties = filterBySearch(filterByCategory(getRecentProperties(recentPropertyIds), selectedCategory), searchQuery);
+    const allProperties = filterBySearch(filterByCategory(getAllProperties(), selectedCategory), searchQuery);
 
     const handlePropertyClick = (property: FilterProperty) => {
         addRecentProperty(property.id);

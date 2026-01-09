@@ -27,7 +27,7 @@ export function SortableHeader({ column, columnWidth, isLast, onResize, onHoverS
         <th
             ref={setNodeRef}
             style={style}
-            className="group relative text-left px-4 py-3 text-sm font-medium text-muted-foreground bg-card cursor-grab active:cursor-grabbing"
+            className="group relative text-left px-4 py-3 text-sm font-medium text-muted-foreground bg-card cursor-grab active:cursor-grabbing border-b border-border"
             {...attributes}
             {...listeners}
         >

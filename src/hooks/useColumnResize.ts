@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Column } from '@/types/results';
 
 interface UseColumnResizeReturn {
@@ -22,6 +22,21 @@ export function useColumnResize(columns: Column[]): UseColumnResizeReturn {
     const [resizeX, setResizeX] = useState(0);
     const [isHovering, setIsHovering] = useState(false);
     const [hoverX, setHoverX] = useState(0);
+
+    // Sync column widths when columns change (e.g. visibility toggle)
+    useEffect(() => {
+        setColumnWidths((prev) => {
+            const next = { ...prev };
+            let hasChanges = false;
+            columns.forEach((col) => {
+                if (next[col.id] === undefined) {
+                    next[col.id] = col.width;
+                    hasChanges = true;
+                }
+            });
+            return hasChanges ? next : prev;
+        });
+    }, [columns]);
 
     const handleHoverStart = useCallback((e: React.MouseEvent) => {
         const tableRect = (e.currentTarget.closest('.results-table-container') as HTMLElement)?.getBoundingClientRect();
