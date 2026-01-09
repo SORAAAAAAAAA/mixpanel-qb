@@ -5,7 +5,7 @@ import { MixpanelProfile } from '@/types/analytics';
 import { formatQuery } from 'react-querybuilder';
 import { generateUsers } from '@/data/mockFactory';
 
-// Helper to map user to filter data (normalized)
+// Maps the user profile to a flattened, normalized structure for consistent filtering logic
 const mapUserToFilterData = (user: MixpanelProfile): Record<string, any> => ({
   // User properties - string
   'name': user.$name,
@@ -17,7 +17,7 @@ const mapUserToFilterData = (user: MixpanelProfile): Record<string, any> => ({
   'geo-source': user.customAttributes?.geo_source,
   'distinct-id': user.distinctId,
   'avatar-url': user.$avatar,
-  // User properties - number (converted to string for JsonLogic equality)
+  // Converts numeric properties to strings to ensure compatibility with JsonLogic string operators
   'connected-accounts': String(user.customAttributes?.connected_accounts ?? ''),
   'age': String(user.customAttributes?.age ?? ''),
   'credit-score': String(user.customAttributes?.credit_score ?? ''),
@@ -76,7 +76,7 @@ import { defaultVisibleColumnIds } from '@/components/results/columns';
 
 
 
-// Start with empty arrays - users will be generated client-side to avoid hydration mismatch
+// Initializes with empty arrays to prevent hydration mismatches; populated on the client side
 export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
   allUsers: [],
   filteredUsers: [],
@@ -113,7 +113,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
 
   getSampleValue: (propertyId) => {
     const { allUsers } = get();
-    // Find first user with a non-empty value for this property
+    // Scans for the first user with a valid value for this property to provide a smart default
     const userWithVal = allUsers.find(u => {
       const data = mapUserToFilterData(u);
       const val = data[propertyId];
@@ -131,13 +131,13 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
   applyFilters: () => {
     const { query, allUsers, searchQuery } = get();
 
-    // If no filters and no search, show all users
+    // Returns early if no filters or search terms are active, showing all users
     if (query.rules.length === 0 && !searchQuery) {
       set({ filteredUsers: allUsers });
       return;
     }
 
-    // Map custom operators to standard RQB operators which formatQuery understands
+    // Translates custom UI operators to standard React Query Builder operators for JsonLogic compatibility
     const translateOperator = (op: string): string => {
       const opMap: Record<string, string> = {
         'is': '=',
@@ -165,7 +165,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
       return opMap[op] || '=';
     };
 
-    // Translate query to use standard operators AND lowercase values for case-insensitive search
+    // Recursively translates the query and lowercases string values to support case-insensitive filtering
     const translateQuery = (q: RuleGroupType): RuleGroupType => ({
       ...q,
       rules: q.rules.map(rule => {
@@ -189,7 +189,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
 
     const translatedQuery = translateQuery(query);
 
-    // Convert the Query Builder object to JsonLogic format
+    // Converts the processed query object into JsonLogic format for execution
     const logic = formatQuery(translatedQuery, 'jsonlogic');
     console.log('Debug - Applied Logic:', JSON.stringify(logic, null, 2));
 
@@ -200,7 +200,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
       // Get raw data
       const rawData = mapUserToFilterData(user);
 
-      // Normalize data logic: lowercase all string values for case-insensitive comparison
+      // Normalizes the user data on the fly by lowercasing string values to match the case-insensitive query
       const data: Record<string, any> = {};
       for (const key in rawData) {
         const val = rawData[key];

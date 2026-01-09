@@ -23,7 +23,7 @@ export function useColumnResize(columns: Column[]): UseColumnResizeReturn {
     const [isHovering, setIsHovering] = useState(false);
     const [hoverX, setHoverX] = useState(0);
 
-    // Sync column widths when columns change (e.g. visibility toggle)
+    // Updates internal state when columns prop changes while preserving existing widths to prevent layout jumps
     useEffect(() => {
         setColumnWidths((prev) => {
             const next = { ...prev };
@@ -57,7 +57,7 @@ export function useColumnResize(columns: Column[]): UseColumnResizeReturn {
         const tableRect = (e.currentTarget.closest('.results-table-container') as HTMLElement)?.getBoundingClientRect();
         const tableLeft = tableRect?.left || 0;
 
-        // Start resizing - show the indicator line
+        // Activates resize mode and sets the initial X position for the indicator line
         setIsResizing(true);
         setResizeX(e.clientX - tableLeft);
 

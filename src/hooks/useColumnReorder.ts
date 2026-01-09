@@ -36,11 +36,12 @@ export function useColumnReorder(
     // const [columns, setColumns] = useState<Column[]>(initialColumns); 
     const [isMounted, setIsMounted] = useState(false);
 
-    // Prevent hydration mismatch
+    // Set mounted state to true to allow client-side only DnD logic to run safely
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
+    // Configures pointer sensor with 8px constraint to prevent accidental drags during clicks
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {

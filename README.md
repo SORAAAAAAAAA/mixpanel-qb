@@ -1,76 +1,76 @@
-# Mixpanel Query Builder
+# Mixpanel Query Builder Clone
 
-A replica of Mixpanel's user profile interface featuring advanced query building and data visualization capabilities.
+A high-fidelity replica of Mixpanel's user profile interface, built to demonstrate advanced frontend engineering practices, complex state management, and interactive data visualization.
 
 ## Overview
 
-This application demonstrates a production-grade implementation of a data query and filtering system, modeled after Mixpanel's analytics platform. Built with modern web technologies and best practices, it showcases clean architecture, state management, and responsive design.
+This project implements a robust "Users" view, allowing granular segmentation of user profiles. It features a visual query builder for creating complex filter rules and a dynamic results table for viewing and managing data. The application is designed for performance, responsiveness, and a premium user experience.
 
-## Tech Stack
+## Technology Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS with custom design tokens
-- **State Management**: Zustand
-- **Query Building**: react-querybuilder with JsonLogic
-- **UI Components**: Radix UI primitives
-- **Mock Data**: Faker.js
+-   **Framework**: Next.js 16 (App Router)
+-   **Core**: React 19, TypeScript
+-   **Styling**: Tailwind CSS v4, Shadcn UI (Radix Primitives)
+-   **State Management**: Zustand
+-   **Query Logic**: react-querybuilder + json-logic-js
+-   **Interactions**: @dnd-kit (Drag & Drop), Custom Resizable Hooks
+-   **Data**: Faker.js (Deterministic Mock Data)
 
 ## Key Features
 
-- **Advanced Query Builder**: Construct complex filters with combinators and nested rules
-- **Resizable Columns**: Interactive table columns with drag-to-resize functionality
-- **Dark Mode**: Optimized theme switching with zero-flash implementation
-- **Type-Safe State**: Centralized state management with TypeScript interfaces
-- **Responsive Design**: Mobile-first approach with adaptive layouts
+### Visual Query Builder
+-   **Smart Defaults**: Selecting a property automatically pre-fills a valid value from the dataset, ensuring immediate results (no empty states).
+-   **Type-Specific Editors**: Supports specific input methods for String (Text/Dropdown), Number (Input with operators), Date (Pickers), and List types.
+-   **Smart Search**: Property dropdowns are searchable by name and ID.
 
-## Architecture Highlights
+### Dynamic Results Table
+-   **Column Management**: Includes a Mixpanel-style dropdown to toggle column visibility.
+-   **Reorder**: Drag and drop columns to rearrange the table layout.
+-   **Resize**: Drag column borders to adjust width.
+-   **Data Visualization**: Custom cell renderers for different data types (Email, Date, Country, etc.).
 
-### State Management
+### Advanced Filtering
+-   **Global Search**: Real-time filtering by Name, Email, or Distinct ID via the top search bar.
+-   **Logic Intersection**: The table displays the intersection of Query Builder Rules AND Global Search Terms.
+-   **Case-Insensitivity**: All filtering is robust and case-insensitive.
 
-- Zustand store for global application state
-- Seeded mock data generation for consistent SSR/client hydration
-- Automatic filter application on query changes
-
-### Performance Optimizations
-
-- Blocking script for instant theme application
-- `disableTransitionOnChange` to prevent layout thrashing
-- Memoized data generation to avoid unnecessary renders
-
-### Component Design
-
-- Reusable UI primitives following composition patterns
-- Separation of concerns (data/presentation/logic)
-- Custom hooks for cross-cutting functionality
-
-## Getting Started
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000)
+### Architecture
+-   **Centralized Store (analytics-store.ts)**: Manages `allUsers`, `filteredUsers`, `query`, and `visibleColumns`. Handles data normalization and filter application efficiently.
+-   **Optimized Performance**: Memoized selectors and components to prevent unnecessary re-renders.
+-   **SSR Compatibility**: Handles hydration mismatches for generated data and client-only state.
 
 ## Project Structure
 
 ```
 src/
-├── app/              # Next.js app router pages
-├── components/       # React components
-│   ├── query-builder/  # Query building UI
-│   ├── results/        # Data table components
-│   └── ui/             # Reusable UI primitives
-├── stores/           # Zustand state stores
-├── types/            # TypeScript type definitions
-├── data/             # Mock data factories
-└── lib/              # Utility functions
+├── app/                  # Next.js App Router root
+├── components/
+│   ├── query-builder/    # Filter UI (Dropdowns, Rule Editors)
+│   ├── results/          # Table UI (Columns, Cells, Drag/Resize logic)
+│   ├── ui/               # Reusable primitives (Buttons, Inputs, Sidebar)
+├── stores/               # Zustand (Analytics Store)
+├── hooks/                # Custom hooks (useColumnReorder, useColumnResize)
+├── lib/                  # Utilities (Constants, cn helper)
+└── types/                # TypeScript Interfaces
 ```
 
-## Development Notes
+## Getting Started
 
-- Faker is seeded (`faker.seed(12345)`) to ensure deterministic data generation
-- Theme script in `<head>` prevents color flash on initial load
-- Column widths use controlled state for smooth resize interactions
-- JsonLogic enables complex query evaluation without custom parsers
+1.  **Install Dependencies**
+    ```bash
+    npm install
+    # or
+    pnpm install
+    ```
+
+2.  **Run Development Server**
+    ```bash
+    npm run dev
+    ```
+
+3.  **Open Browser**
+    Navigate to [http://localhost:3000](http://localhost:3000).
+
+---
+
+*Note: Data is generated deterministically using `faker.seed(12345)`, ensuring consistent results across reloads.*

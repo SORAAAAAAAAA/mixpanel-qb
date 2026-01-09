@@ -105,7 +105,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Pinned Section - Only visible when sidebar is expanded */}
+        {/* Pinned Section - controlled by local state to allow toggling visibility */}
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <Collapsible open={isPinnedOpen} onOpenChange={setIsPinnedOpen}>
             <CollapsibleTrigger asChild>
@@ -135,8 +135,8 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer */}
-      <SidebarFooter className="border-t border-border/50 p-2">
+      {/* Footer containing global actions and toggle trigger */}
+      <SidebarFooter className="group-data-[state=expanded]:border-t border-border/50">
         <div className="flex gap-1 flex-row items-center justify-between group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
           <div className="flex gap-1 flex-row group-data-[collapsible=icon]:flex-col">
             {footerItems.map((item, index) => (
@@ -151,6 +151,7 @@ export function AppSidebar() {
               </SidebarMenuButton>
             ))}
           </div>
+          <div className="group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:border-t group-data-[collapsible=icon]:border-border/50" />
           <SidebarTrigger className="h-8 w-8 flex items-center justify-center" />
         </div>
       </SidebarFooter>

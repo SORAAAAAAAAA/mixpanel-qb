@@ -82,18 +82,18 @@ function SidebarProvider({
         _setOpen(openState)
       }
 
-      // This sets the cookie to keep the sidebar state.
+      // Persists the sidebar state to a cookie for session consistency
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
     [setOpenProp, open]
   )
 
-  // Helper to toggle the sidebar.
+  // Toggles the sidebar open or closed, handling both mobile and desktop states
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open)
   }, [isMobile, setOpen, setOpenMobile])
 
-  // Adds a keyboard shortcut to toggle the sidebar.
+  // Registers a keyboard shortcut (Cmd+B) to toggle the sidebar visibility
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (

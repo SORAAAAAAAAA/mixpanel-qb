@@ -21,6 +21,7 @@ interface FilterSidebarProps {
 
 export function FilterSidebar({ selectedCategory, onCategoryChange }: FilterSidebarProps) {
   const { state } = useSidebar();
+  // Derives the expanded state to conditionally style the footer alignment
   const isExpanded = state === 'expanded';
 
   return (
@@ -36,7 +37,7 @@ export function FilterSidebar({ selectedCategory, onCategoryChange }: FilterSide
                   <SidebarMenuButton
                     tooltip={item.label}
                     isActive={selectedCategory === item.category}
-                    onClick={() => onCategoryChange(item.category)}
+                    onClick={() => onCategoryChange(item.category)} // Updates the selected category in the parent QueryBuilder component
                   >
                     <item.icon />
                     <span>{item.label}</span>

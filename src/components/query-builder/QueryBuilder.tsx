@@ -28,16 +28,15 @@ export default function QueryBuilder() {
   const query = useAnalyticsStore((state) => state.query);
   const setQuery = useAnalyticsStore((state) => state.setQuery);
 
-  // Check if there are active filters
+  // Checks if there are any active rules to determine if the query builder should be shown
   const hasFilters = query.rules.length > 0;
 
-  // Handler when a property is selected from the dropdown
+  // Handles user selection of a property, creating a new rule and pre-filling a valid value
   const handlePropertySelect = (property: FilterProperty) => {
     // Create a new rule for this property
     const newRule = createRuleForProperty(property.id);
 
-    // Get a sample value for the property to pre-fill
-    // This ensures that choosing a filter immediately shows valid results
+    // Retrieves a valid sample value for the property to ensure immediate visual feedback
     const sampleValue = useAnalyticsStore.getState().getSampleValue(property.id);
     if (sampleValue) {
       newRule.value = sampleValue;
@@ -53,7 +52,7 @@ export default function QueryBuilder() {
     setDropdownOpen(false); // Close the dropdown
   };
 
-  // Reset category and search when dropdown closes
+  // Resets the dropdown state (category and search) when it is closed to ensure a fresh state on next open
   const handleDropdownOpenChange = (open: boolean) => {
     setDropdownOpen(open);
     if (!open) {

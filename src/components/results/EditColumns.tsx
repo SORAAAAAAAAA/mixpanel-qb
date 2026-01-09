@@ -24,7 +24,7 @@ export function EditColumns() {
     const [hiddenOpen, setHiddenOpen] = React.useState(false)
     const [hoveredColumnId, setHoveredColumnId] = React.useState<string | null>(null)
 
-    // Filter columns based on search
+    // Filters the list of available columns based on the user's search query
     const filteredColumns = React.useMemo(() => {
         if (!searchQuery) return allColumnDefinitions
         return allColumnDefinitions.filter(col =>
@@ -32,11 +32,12 @@ export function EditColumns() {
         )
     }, [searchQuery])
 
-    // Grouping logic (Static based on defaultVisibleColumnIds)
+    // Separates columns into the 'Main' (default visible) group
     const mainColumns = filteredColumns.filter(col =>
         defaultVisibleColumnIds.includes(col.id)
     )
 
+    // Separates columns into the 'Hidden' group, which are collapsed by default
     const hiddenColumnsGroup = filteredColumns.filter(col =>
         !defaultVisibleColumnIds.includes(col.id)
     )
@@ -51,9 +52,10 @@ export function EditColumns() {
         setVisibleColumns([])
     }
 
-    // Determine if all or none are selected (for "Select all" toggle logic if needed, but UI shows "Deselect all")
+    // Determines if all columns are selected to toggle the 'Select All' / 'Deselect All' state
     const allSelected = visibleColumns.length === allColumnDefinitions.length && allColumnDefinitions.length > 0
 
+    // Resolves the currently hovered column ID to its full property definition for the details panel
     const hoveredProperty = React.useMemo(() => {
         return filterProperties.find(p => p.id === hoveredColumnId) || null
     }, [hoveredColumnId])

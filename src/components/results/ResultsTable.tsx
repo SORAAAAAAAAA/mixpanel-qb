@@ -16,7 +16,7 @@ export function ResultsTable({ users }: ResultsTableProps) {
   const visibleColumns = useAnalyticsStore((state) => state.visibleColumns);
   const setVisibleColumns = useAnalyticsStore((state) => state.setVisibleColumns);
 
-  // Derive column objects from visible IDs, preserving order
+  // Computes the list of column objects to render based on the order of IDs in visibleColumns
   const currentColumns = useMemo(() => {
     return visibleColumns
       .map((id) => allColumnDefinitions.find((col) => col.id === id))
@@ -38,7 +38,7 @@ export function ResultsTable({ users }: ResultsTableProps) {
 
   const { columnWidths, handleResize, isResizing, resizeX, isHovering, hoverX, handleHoverStart, handleHoverEnd } = useColumnResize(currentColumns);
 
-  // Render without DndContext during SSR to prevent hydration mismatch
+  // Renders a static table during Server-Side Rendering (SSR) to match the initial client render and avoid hydration errors
   if (!isMounted) {
     return (
       <div className="w-full h-full overflow-auto border border-border rounded-lg">
