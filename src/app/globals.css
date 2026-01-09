@@ -160,3 +160,61 @@
     @apply bg-muted-foreground/50;
   }
 }
+
+/* React Day Picker Calendar Styles - Override CSS variables */
+.rdp-mixpanel {
+  --rdp-accent-color: #4f44e0;
+  --rdp-accent-background-color: rgba(123, 128, 255, 0.15);
+  --rdp-day-height: 32px;
+  --rdp-day-width: 32px;
+  --rdp-selected-font: inherit;
+  font-size: 0.875rem;
+}
+
+.rdp-mixpanel .rdp-day_button {
+  border-radius: 50%;
+}
+
+.rdp-mixpanel .rdp-today:not(.rdp-outside) .rdp-day_button {
+  background-color: var(--rdp-accent-color);
+  color: white;
+}
+
+.rdp-mixpanel .rdp-selected .rdp-day_button {
+  background-color: var(--rdp-accent-color);
+  color: white;
+}
+
+.rdp-mixpanel .rdp-range_start .rdp-day_button,
+.rdp-mixpanel .rdp-range_end .rdp-day_button {
+  background-color: var(--rdp-accent-color);
+  color: white;
+}
+
+.rdp-mixpanel .rdp-range_middle .rdp-day_button {
+  background-color: var(--rdp-accent-background-color);
+  color: inherit;
+  border-radius: 0;
+}
+
+.rdp-mixpanel .rdp-range_start,
+.rdp-mixpanel .rdp-range_end,
+.rdp-mixpanel .rdp-range_middle {
+  background-color: var(--rdp-accent-background-color);
+}
+
+.rdp-mixpanel .rdp-range_start {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.rdp-mixpanel .rdp-range_end {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.rdp-mixpanel .rdp-weekday {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-weight: 400;
+}

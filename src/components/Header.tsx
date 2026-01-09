@@ -2,8 +2,8 @@
 
 import Button from '@/components/ui/Button';
 import { ModeToggle } from '@/components/ui/mode-toggle';
-import { ButtonCard } from './ui/ButtonCard';
-import { SearchBar } from './ui/SearchBar';
+import { ButtonCard } from '@/components/ui/ButtonCard';
+import { SearchBar } from '@/components/ui/SearchBar';
 
 interface HeaderProps {
   userCount?: number;
@@ -26,9 +26,9 @@ export default function Header({ userCount = 100000, visibleColumnsCount = 7 }: 
           <span className="text-xl font-bold text-foreground">
             {userCount.toLocaleString()}
           </span>
-          <span className="text-sm text-primary font-medium">
-            Users with Profiles
-          </span>
+          <Button onClick={() => alert('Edit Columns')} variant="secondary" size="sm">
+            <ButtonCard label="Users with Profiles" />
+          </Button>
         </div>
 
         {/* Right side: Action buttons */}
@@ -38,7 +38,7 @@ export default function Header({ userCount = 100000, visibleColumnsCount = 7 }: 
           </Button>
 
           <Button onClick={() => alert('Edit Columns')} variant="secondary" size="sm">
-            <ButtonCard iconName="Pencil" label={`Edit Columns • ${visibleColumnsCount}`} />
+            <ButtonCard label="Edit Columns" />
           </Button>
 
           <Button

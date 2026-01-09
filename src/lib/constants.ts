@@ -32,12 +32,14 @@ export const menuItems = [
   { icon: SquarePlay, label: "Session Replay", href: "/" },
 ]
 
-export const propertyMenuItems = [
-  { icon: ALargeSmall, label: "All" },
-  { icon: UserRoundCog, label: "User" },
-  { icon: MousePointerClick, label: "Users Who did..." },
-  { icon: Calculator, label: "Computed" },
-  { icon: Users, label: "Cohorts" },
+export type PropertyMenuCategory = 'all' | 'user' | 'event' | 'computed' | 'cohort';
+
+export const propertyMenuItems: { icon: typeof ALargeSmall; label: string; category: PropertyMenuCategory }[] = [
+  { icon: ALargeSmall, label: "All", category: 'all' },
+  { icon: UserRoundCog, label: "User", category: 'user' },
+  { icon: MousePointerClick, label: "Users Who did...", category: 'event' },
+  { icon: Calculator, label: "Computed", category: 'computed' },
+  { icon: Users, label: "Cohorts", category: 'cohort' },
 ]
 
 //Sidebar footer items

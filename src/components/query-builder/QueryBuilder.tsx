@@ -17,10 +17,12 @@ import { SidebarProvider } from "@/components/ui/sidebar"
 import { FilterProperty } from '@/types/filter-property';
 import { useAnalyticsStore } from '@/stores/analytics-store';
 import { RuleGroupType } from 'react-querybuilder';
+import { PropertyMenuCategory } from '@/lib/constants';
 
 export default function QueryBuilder() {
   const [hoveredProperty, setHoveredProperty] = useState<FilterProperty | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<PropertyMenuCategory>('all');
 
   const query = useAnalyticsStore((state) => state.query);
   const setQuery = useAnalyticsStore((state) => state.setQuery);
@@ -43,6 +45,14 @@ export default function QueryBuilder() {
     setDropdownOpen(false); // Close the dropdown
   };
 
+  // Reset category when dropdown closes
+  const handleDropdownOpenChange = (open: boolean) => {
+    setDropdownOpen(open);
+    if (!open) {
+      setSelectedCategory('all'); // Reset to "All" when closing
+    }
+  };
+
   return (
     <QueryBuilderContainer>
       {/* Show existing filters using QueryBuilderWrapper */}
@@ -53,7 +63,7 @@ export default function QueryBuilder() {
       )}
 
       {/* Add Filter Button with Property Dropdown - always below */}
-      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+      <DropdownMenu open={dropdownOpen} onOpenChange={handleDropdownOpenChange}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="secondary"
@@ -74,13 +84,17 @@ export default function QueryBuilder() {
               className="w-full h-full"
             >
               <div className="flex flex-1 w-full h-full overflow-hidden relative min-h-0">
-                <FilterSidebar />
+                <FilterSidebar
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={setSelectedCategory}
+                />
 
                 <div className="flex-1 flex flex-row min-w-0">
                   <PropertyList
                     hoveredProperty={hoveredProperty}
                     onHoverProperty={setHoveredProperty}
                     onSelectProperty={handlePropertySelect}
+                    selectedCategory={selectedCategory}
                   />
                   <PropertyDetails property={hoveredProperty} />
                 </div>

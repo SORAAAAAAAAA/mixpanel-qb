@@ -12,10 +12,14 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { propertyMenuItems } from "@/lib/constants"
+import { propertyMenuItems, PropertyMenuCategory } from "@/lib/constants"
 
+interface FilterSidebarProps {
+  selectedCategory: PropertyMenuCategory;
+  onCategoryChange: (category: PropertyMenuCategory) => void;
+}
 
-export function FilterSidebar() {
+export function FilterSidebar({ selectedCategory, onCategoryChange }: FilterSidebarProps) {
   const { state } = useSidebar();
   const isExpanded = state === 'expanded';
 
@@ -29,7 +33,11 @@ export function FilterSidebar() {
             <SidebarMenu className="gap-2">
               {propertyMenuItems.map((item) => (
                 <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton tooltip={item.label}>
+                  <SidebarMenuButton
+                    tooltip={item.label}
+                    isActive={selectedCategory === item.category}
+                    onClick={() => onCategoryChange(item.category)}
+                  >
                     <item.icon />
                     <span>{item.label}</span>
                   </SidebarMenuButton>

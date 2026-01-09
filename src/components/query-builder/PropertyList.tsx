@@ -5,26 +5,56 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { FilterProperty } from '@/types/filter-property';
+import { FilterProperty, PropertyCategory } from '@/types/filter-property';
 import { getRecentProperties, getAllProperties } from '@/data/filterProperties';
 import { useRecentPropertiesStore } from '@/stores/recent-properties-store';
 import { Plus } from 'lucide-react';
+import { PropertyMenuCategory } from '@/lib/constants';
 
 interface PropertyListProps {
     hoveredProperty: FilterProperty | null;
     onHoverProperty: (property: FilterProperty | null) => void;
     onSelectProperty?: (property: FilterProperty) => void;
+    selectedCategory: PropertyMenuCategory;
 }
 
-export function PropertyList({ hoveredProperty, onHoverProperty, onSelectProperty }: PropertyListProps) {
+/**
+ * Filters properties based on the selected sidebar category.
+ */
+function filterByCategory(properties: FilterProperty[], category: PropertyMenuCategory): FilterProperty[] {
+    if (category === 'all') {
+        return properties;
+    }
+    // Map menu category to property category
+    return properties.filter(p => p.category === category);
+}
+
+export function PropertyList({
+    hoveredProperty,
+    onHoverProperty,
+    onSelectProperty,
+    selectedCategory,
+}: PropertyListProps) {
     const { recentPropertyIds, addRecentProperty } = useRecentPropertiesStore();
 
-    const recentProperties = getRecentProperties(recentPropertyIds);
-    const allProperties = getAllProperties();
+    const recentProperties = filterByCategory(getRecentProperties(recentPropertyIds), selectedCategory);
+    const allProperties = filterByCategory(getAllProperties(), selectedCategory);
 
     const handlePropertyClick = (property: FilterProperty) => {
         addRecentProperty(property.id);
         onSelectProperty?.(property);
+    };
+
+    // Determine label based on category
+    const getCategoryLabel = () => {
+        switch (selectedCategory) {
+            case 'all': return 'All Properties';
+            case 'user': return 'User Properties';
+            case 'event': return 'Event Properties';
+            case 'computed': return 'Computed Properties';
+            case 'cohort': return 'Cohorts';
+            default: return 'All Properties';
+        }
     };
 
     return (
@@ -41,7 +71,7 @@ export function PropertyList({ hoveredProperty, onHoverProperty, onSelectPropert
                 <DropdownMenuSeparator className="my-1" />
             </div>
 
-            {/* Recents Section - Only shows if there are recent properties */}
+            {/* Recents Section - Only shows if there are recent properties in this category */}
             {recentProperties.length > 0 && (
                 <>
                     <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground py-0.5 px-2">Recents</DropdownMenuLabel>
@@ -62,26 +92,32 @@ export function PropertyList({ hoveredProperty, onHoverProperty, onSelectPropert
                 </>
             )}
 
-            {/* All Properties Section */}
-            <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground py-0.5 px-2">All Properties</DropdownMenuLabel>
+            {/* Properties Section */}
+            <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground py-0.5 px-2">{getCategoryLabel()}</DropdownMenuLabel>
             <DropdownMenuGroup>
-                {allProperties.map((property) => (
-                    <DropdownMenuItem
-                        key={property.id}
-                        className="cursor-pointer transition-colors text-xs py-1.5"
-                        onMouseEnter={() => onHoverProperty(property)}
-                        onClick={() => handlePropertyClick(property)}
-                    >
-                        <property.icon className="h-3.5 w-3.5 mr-2 text-foreground" />
-                        {property.eventName && (
-                            <span className="text-muted-foreground mr-1 text-[10px]">Event ▸</span>
-                        )}
-                        {property.cohortName && (
-                            <span className="text-muted-foreground mr-1 text-[10px]">In Cohort ▸</span>
-                        )}
-                        <span>{property.label}</span>
-                    </DropdownMenuItem>
-                ))}
+                {allProperties.length > 0 ? (
+                    allProperties.map((property) => (
+                        <DropdownMenuItem
+                            key={property.id}
+                            className="cursor-pointer transition-colors text-xs py-1.5"
+                            onMouseEnter={() => onHoverProperty(property)}
+                            onClick={() => handlePropertyClick(property)}
+                        >
+                            <property.icon className="h-3.5 w-3.5 mr-2 text-foreground" />
+                            {property.eventName && (
+                                <span className="text-muted-foreground mr-1 text-[10px]">Event ▸</span>
+                            )}
+                            {property.cohortName && (
+                                <span className="text-muted-foreground mr-1 text-[10px]">In Cohort ▸</span>
+                            )}
+                            <span>{property.label}</span>
+                        </DropdownMenuItem>
+                    ))
+                ) : (
+                    <div className="text-xs text-muted-foreground px-2 py-4 text-center">
+                        No properties in this category
+                    </div>
+                )}
             </DropdownMenuGroup>
         </div>
     );

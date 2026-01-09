@@ -4,45 +4,31 @@ import { QueryBuilder as RQB, Field, RuleGroupType, RuleType } from 'react-query
 import { useAnalyticsStore } from '@/stores/analytics-store';
 import { getAllProperties, getPropertyById } from '@/data/filterProperties';
 import { getDefaultOperator } from '@/data/operators';
-import { MixpanelFieldSelector } from '@/components/query-builder/controls/MixpanelFieldSelector';
-import { MixpanelOperatorSelector } from '@/components/query-builder/controls/MixpanelOperatorSelector';
-import { MixpanelValueEditor } from '@/components/query-builder/controls/MixpanelValueEditor';
-import { MixpanelRemoveButton } from '@/components/query-builder/controls/MixpanelRemoveButton';
+import {
+    MixpanelFieldSelector,
+    MixpanelOperatorSelector,
+    MixpanelValueEditor,
+    MixpanelRemoveButton,
+} from './controls';
 import './query-builder.css';
 
 // Map FilterProperty to RQB Field format
 const fields: Field[] = getAllProperties().map(p => ({
     name: p.id,
     label: p.label,
-    // You can add inputType here if needed for value editor customization
 }));
 
 interface QueryBuilderWrapperProps {
-    // Optional: Called when user wants to add a new rule via the property dropdown
     onAddRule?: (propertyId: string) => void;
 }
 
+/**
+ * Wrapper around React Query Builder that integrates with the analytics store
+ * and provides Mixpanel-styled custom controls.
+ */
 export function QueryBuilderWrapper({ onAddRule }: QueryBuilderWrapperProps) {
     const query = useAnalyticsStore((state) => state.query);
     const setQuery = useAnalyticsStore((state) => state.setQuery);
-
-    // Handler for adding a rule from external property selector
-    const addRuleForProperty = (propertyId: string) => {
-        const newRule = createRuleForProperty(propertyId);
-
-        const newQuery: RuleGroupType = {
-            ...query,
-            rules: [...query.rules, newRule],
-        };
-
-        setQuery(newQuery);
-    };
-
-    // Expose addRuleForProperty if parent needs it
-    if (onAddRule) {
-        // This is a pattern to allow parent to trigger adding rules
-        // We'll use a different approach - see QueryBuilder.tsx
-    }
 
     return (
         <div className="query-builder-wrapper">
@@ -71,23 +57,63 @@ export function QueryBuilderWrapper({ onAddRule }: QueryBuilderWrapperProps) {
     );
 }
 
+// ============ Rule Creation Utilities ============
+
 // Simple counter for stable rule IDs
 let ruleIdCounter = 0;
 const generateRuleId = () => `rule-${++ruleIdCounter}`;
 
+/**
+ * Returns an appropriate default value based on the property's data type.
+ * This ensures filters show results immediately when added.
+ */
+function getDefaultValue(dataType: string, operator: string): string {
+    switch (dataType) {
+        case 'string':
+        case 'list':
+            // Empty string matches nothing specific, but keeps it simple
+            return '';
+        case 'number':
+            if (operator === 'between' || operator === 'not_between') {
+                return JSON.stringify({ min: '0', max: '100' });
+            }
+            return '0';
+        case 'date':
+            if (operator === 'last' || operator === 'not_in_last') {
+                return JSON.stringify({ value: '30', unit: 'days' });
+            }
+            if (operator === 'between' || operator === 'not_between') {
+                return JSON.stringify({ start: '', end: '' });
+            }
+            return '';
+        case 'event':
+            return JSON.stringify({
+                aggregation: 'total_events',
+                countOperator: 'gte',
+                count: '1',
+                timeValue: '30',
+                timeUnit: 'days',
+            });
+        case 'cohort':
+            return '';
+        default:
+            return '';
+    }
+}
 
-
-// Export the addRuleForProperty function for use elsewhere
+/**
+ * Creates a new rule for the specified property with default operator and value.
+ */
 export function createRuleForProperty(propertyId: string): RuleType {
     const property = getPropertyById(propertyId);
     const dataType = property?.dataType || 'string';
     const defaultOperator = getDefaultOperator(dataType);
+    const defaultValue = getDefaultValue(dataType, defaultOperator);
 
     return {
         id: generateRuleId(),
         field: propertyId,
         operator: defaultOperator,
-        value: '',
+        value: defaultValue,
     };
 }
-
