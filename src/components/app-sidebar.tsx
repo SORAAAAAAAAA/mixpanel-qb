@@ -41,8 +41,6 @@ const pinnedItems = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
-  const isExpanded = state === 'expanded';
   const [isPinnedOpen, setIsPinnedOpen] = useState(true);
 
   return (
@@ -54,9 +52,7 @@ export function AppSidebar() {
           className="h-10 w-full justify-center hover:bg-transparent"
         >
           <MixpanelLogo />
-          {isExpanded && (
-            <span className="font-semibold text-foreground ml-2">Mixpanel</span>
-          )}
+          <span className="font-semibold text-foreground ml-2 group-data-[collapsible=icon]:hidden">Mixpanel</span>
         </SidebarMenuButton>
       </SidebarHeader>
 
@@ -71,11 +67,11 @@ export function AppSidebar() {
                   className={cn(
                     "h-9 bg-[#4f44e0] hover:bg-[#5249e1] text-white",
                     "data-[state=open]:bg-[#4f44e0]",
-                    isExpanded ? "justify-start px-3" : "justify-center"
+                    "justify-start px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-2"
                   )}
                 >
                   <Plus className="h-4 w-4" />
-                  {isExpanded && <span className="ml-2">Create New</span>}
+                  <span className="ml-2 group-data-[collapsible=icon]:hidden">Create New</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -90,19 +86,17 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
                     asChild
-                    tooltip={item.shortcut ? `${item.label} (${item.shortcut})` : item.label}
+                    tooltip={item.label}
                     className="h-9"
                   >
                     <a href={item.href} className="flex items-center">
                       <item.icon className="h-4 w-4" />
-                      {isExpanded && (
-                        <div className="flex items-center justify-between flex-1 ml-2">
-                          <span>{item.label}</span>
-                          {item.shortcut && (
-                            <span className="text-xs text-muted-foreground">{item.shortcut}</span>
-                          )}
-                        </div>
-                      )}
+                      <div className="flex items-center justify-between flex-1 ml-2 group-data-[collapsible=icon]:hidden">
+                        <span>{item.label}</span>
+                        {item.shortcut && (
+                          <span className="text-xs text-muted-foreground">{item.shortcut}</span>
+                        )}
+                      </div>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -112,47 +106,39 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Pinned Section - Only visible when sidebar is expanded */}
-        {isExpanded && (
-          <SidebarGroup>
-            <Collapsible open={isPinnedOpen} onOpenChange={setIsPinnedOpen}>
-              <CollapsibleTrigger asChild>
-                <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground flex items-center justify-between pr-2">
-                  <span>Pinned</span>
-                  <ChevronDown className={cn(
-                    "h-3 w-3 transition-transform duration-200",
-                    isPinnedOpen ? "" : "-rotate-90"
-                  )} />
-                </SidebarGroupLabel>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarGroupContent>
-                  <SidebarMenu className="gap-1">
-                    {pinnedItems.map((item) => (
-                      <SidebarMenuItem key={item.label}>
-                        <SidebarMenuButton className="h-8">
-                          <span className="text-sm">{item.emoji}</span>
-                          <span className="ml-2 text-sm">{item.label}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </Collapsible>
-          </SidebarGroup>
-        )}
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+          <Collapsible open={isPinnedOpen} onOpenChange={setIsPinnedOpen}>
+            <CollapsibleTrigger asChild>
+              <SidebarGroupLabel className="text-xs text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground flex items-center justify-between pr-2">
+                <span>Pinned</span>
+                <ChevronDown className={cn(
+                  "h-3 w-3 transition-transform duration-200",
+                  isPinnedOpen ? "" : "-rotate-90"
+                )} />
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu className="gap-1">
+                  {pinnedItems.map((item) => (
+                    <SidebarMenuItem key={item.label}>
+                      <SidebarMenuButton className="h-8">
+                        <span className="text-sm">{item.emoji}</span>
+                        <span className="ml-2 text-sm">{item.label}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </Collapsible>
+        </SidebarGroup>
       </SidebarContent>
 
       {/* Footer */}
       <SidebarFooter className="border-t border-border/50 p-2">
-        <div className={cn(
-          "flex gap-1",
-          isExpanded ? "flex-row items-center justify-between" : "flex-col items-center"
-        )}>
-          <div className={cn(
-            "flex gap-1",
-            isExpanded ? "flex-row" : "flex-col"
-          )}>
+        <div className="flex gap-1 flex-row items-center justify-between group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
+          <div className="flex gap-1 flex-row group-data-[collapsible=icon]:flex-col">
             {footerItems.map((item, index) => (
               <SidebarMenuButton
                 key={index}

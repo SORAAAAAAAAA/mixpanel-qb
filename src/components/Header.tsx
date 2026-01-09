@@ -8,9 +8,16 @@ import { SearchBar } from '@/components/ui/SearchBar';
 interface HeaderProps {
   userCount?: number;
   visibleColumnsCount?: number;
+  onToggleFilter?: () => void;
+  isFilterVisible?: boolean;
 }
 
-export default function Header({ userCount = 100000, visibleColumnsCount = 7 }: HeaderProps) {
+export default function Header({
+  userCount = 100000,
+  visibleColumnsCount = 7,
+  onToggleFilter,
+  isFilterVisible = true
+}: HeaderProps) {
   return (
     <header className="top-0 z-50 flex flex-col w-full bg-background">
       {/* Top row: Title and Mode Toggle */}
@@ -33,8 +40,11 @@ export default function Header({ userCount = 100000, visibleColumnsCount = 7 }: 
 
         {/* Right side: Action buttons */}
         <div className="flex items-center gap-2">
-          <Button onClick={() => alert('Hide Filter')} variant="secondary" size="sm">
-            <ButtonCard iconName="FunnelPlus" label="Hide Filter" />
+          <Button onClick={onToggleFilter} variant="secondary" size="sm">
+            <ButtonCard
+              iconName="FunnelPlus"
+              label={isFilterVisible ? "Hide Filter" : "Show Filter"}
+            />
           </Button>
 
           <Button onClick={() => alert('Edit Columns')} variant="secondary" size="sm">

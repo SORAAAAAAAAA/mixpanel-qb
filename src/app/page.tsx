@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import { ResultsTable } from '@/components/results/ResultsTable';
 import { useAnalyticsStore } from '@/stores/analytics-store';
@@ -11,6 +11,7 @@ import { generateUsers } from '@/data/mockFactory';
 
 
 export default function Home() {
+  const [isFilterVisible, setIsFilterVisible] = useState(true);
   const allUsers = useAnalyticsStore((state) => state.allUsers);
   const filteredUsers = useAnalyticsStore((state) => state.filteredUsers);
   const setQuery = useAnalyticsStore((state) => state.setQuery);
@@ -25,22 +26,31 @@ export default function Home() {
 
   return (
     <div className="flex h-screen w-full flex-col bg-background">
-      <Header userCount={allUsers.length} visibleColumnsCount={7} />
+      <Header
+        userCount={allUsers.length}
+        visibleColumnsCount={7}
+        onToggleFilter={() => setIsFilterVisible(!isFilterVisible)}
+        isFilterVisible={isFilterVisible}
+      />
 
       <main className="flex-1 overflow-hidden p-6">
         <div className="flex h-full flex-col gap-4">
           {/* Filter Section */}
 
-          <QueryBuilder />
+          {isFilterVisible && (
+            <>
+              <QueryBuilder />
 
-          <div className="flex justify-end gap-2">
-            <Button variant="secondary" size="sm">
-              <ButtonCard label="Clear all" />
-            </Button>
-            <Button variant="primary" size="sm">
-              <ButtonCard label="Save as" />
-            </Button>
-          </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="secondary" size="sm">
+                  <ButtonCard label="Clear all" />
+                </Button>
+                <Button variant="primary" size="sm">
+                  <ButtonCard label="Save as" />
+                </Button>
+              </div>
+            </>
+          )}
 
           {/* Results Table */}
           <div className="flex-1 overflow-hidden rounded-xl">
