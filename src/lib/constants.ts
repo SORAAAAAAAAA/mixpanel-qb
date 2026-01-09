@@ -1,18 +1,18 @@
 import { ButtonVariant } from '@/types/ui/index';
 import {
-  Database,
   Plus,
   Compass,
   Search,
   SquarePlay,
   Settings,
-  CircleQuestionMark,
+  CircleHelp,
+  LayoutGrid,
+  Layers,
   ALargeSmall,
   UserRoundCog,
   MousePointerClick,
   Calculator,
   Users,
-  LayoutGrid
 } from "lucide-react"
 
 export const variantStyles: Record<ButtonVariant, string> = {
@@ -23,12 +23,11 @@ export const variantStyles: Record<ButtonVariant, string> = {
   outline: 'border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors duration-200 cursor-pointer',
 };
 
-// Sidebar menu items
+// App Sidebar menu items - matches Mixpanel's main navigation
 export const menuItems = [
-  { icon: Plus, label: "Create New", href: "/" },
-  { icon: Search, label: "Search", href: "/" },
+  { icon: Search, label: "Search", href: "/", shortcut: "Ctrl + K" },
   { icon: Compass, label: "Discover", href: "/" },
-  { icon: Database, label: "Data", href: "/" },
+  { icon: Layers, label: "Data", href: "/" },
   { icon: SquarePlay, label: "Session Replay", href: "/" },
 ]
 
@@ -42,9 +41,9 @@ export const propertyMenuItems: { icon: typeof ALargeSmall; label: string; categ
   { icon: Users, label: "Cohorts", category: 'cohort' },
 ]
 
-//Sidebar footer items
+//Sidebar footer items - matches Mixpanel's bottom section
 export const footerItems = [
-  { icon: LayoutGrid, href: "/" },
-  { icon: CircleQuestionMark, href: "/" },
-  { icon: Settings, href: "/" },
+  { icon: LayoutGrid, label: "Applications", href: "/" },
+  { icon: CircleHelp, label: "Help", href: "/" },
+  { icon: Settings, label: "Settings", href: "/" },
 ];

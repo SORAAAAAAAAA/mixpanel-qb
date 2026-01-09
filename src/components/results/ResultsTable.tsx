@@ -7,8 +7,10 @@ import { useColumnReorder } from '@/hooks/useColumnReorder';
 import { SortableHeader } from './SortableHeader';
 import { ResizableCell } from './ResizableCell';
 import { renderCellContent } from './cells';
+import { useRouter } from 'next/navigation';
 
 export function ResultsTable({ users }: ResultsTableProps) {
+  const router = useRouter();
   const {
     columns,
     isMounted,
@@ -46,7 +48,8 @@ export function ResultsTable({ users }: ResultsTableProps) {
             {users.map((user, rowIndex) => (
               <tr
                 key={user.distinctId}
-                className={`border-b border-border hover:bg-muted/50 transition-colors ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-card/50'
+                onClick={() => router.push(`/UserProfile?id=${user.distinctId}`)}
+                className={`border-b border-border hover:bg-muted/50 transition-colors cursor-pointer ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-card/50'
                   }`}
               >
                 {columns.map((column) => (
@@ -105,7 +108,8 @@ export function ResultsTable({ users }: ResultsTableProps) {
             {users.map((user, rowIndex) => (
               <tr
                 key={user.distinctId}
-                className={`border-b border-border hover:bg-muted/50 transition-colors ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-card/50'
+                onClick={() => router.push(`/UserProfile?id=${user.distinctId}`)}
+                className={`border-b border-border hover:bg-muted/50 transition-colors cursor-pointer ${rowIndex % 2 === 0 ? 'bg-background' : 'bg-card/50'
                   }`}
               >
                 {columns.map((column, index) => (
