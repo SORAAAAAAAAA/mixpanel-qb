@@ -4,10 +4,10 @@ import { QueryBuilder as RQB, Field, RuleGroupType, RuleType } from 'react-query
 import { useAnalyticsStore } from '@/stores/analytics-store';
 import { getAllProperties, getPropertyById } from '@/data/filterProperties';
 import { getDefaultOperator } from '@/data/operators';
-import { MixpanelFieldSelector } from './controls/MixpanelFieldSelector';
-import { MixpanelOperatorSelector } from './controls/MixpanelOperatorSelector';
-import { MixpanelValueEditor } from './controls/MixpanelValueEditor';
-import { MixpanelRemoveButton } from './controls/MixpanelRemoveButton';
+import { MixpanelFieldSelector } from '@/components/query-builder/controls/MixpanelFieldSelector';
+import { MixpanelOperatorSelector } from '@/components/query-builder/controls/MixpanelOperatorSelector';
+import { MixpanelValueEditor } from '@/components/query-builder/controls/MixpanelValueEditor';
+import { MixpanelRemoveButton } from '@/components/query-builder/controls/MixpanelRemoveButton';
 import './query-builder.css';
 
 // Map FilterProperty to RQB Field format
