@@ -35,6 +35,13 @@ export default function QueryBuilder() {
     // Create a new rule for this property
     const newRule = createRuleForProperty(property.id);
 
+    // Get a sample value for the property to pre-fill
+    // This ensures that choosing a filter immediately shows valid results
+    const sampleValue = useAnalyticsStore.getState().getSampleValue(property.id);
+    if (sampleValue) {
+      newRule.value = sampleValue;
+    }
+
     // Add to query
     const newQuery: RuleGroupType = {
       ...query,
