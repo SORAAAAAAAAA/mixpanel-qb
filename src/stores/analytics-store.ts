@@ -148,11 +148,14 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
   },
 
   applyFilters: () => {
-    const { query, allUsers, searchQuery } = get();
+    const { filterGroups, allUsers, searchQuery } = get();
+
+    // Get groups that have actual rules
+    const activeGroups = filterGroups.filter(g => g.query.rules.length > 0);
 
     // Returns early if no filters or search terms are active, showing all users
-    if (query.rules.length === 0 && !searchQuery) {
-      set({ filteredUsers: allUsers });
+    if (activeGroups.length === 0 && !searchQuery) {
+      set({ filteredUsers: allUsers })
       return;
     }
 
@@ -206,11 +209,26 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
       }),
     });
 
-    const translatedQuery = translateQuery(query);
+    // Build JsonLogic for each active group
+    const groupLogics = activeGroups.map(g => {
+      const translatedQuery = translateQuery(g.query);
+      return formatQuery(translatedQuery, 'jsonlogic');
+    });
 
-    // Converts the processed query object into JsonLogic format for execution
-    const logic = formatQuery(translatedQuery, 'jsonlogic');
-    console.log('Debug - Applied Logic:', JSON.stringify(logic, null, 2));
+    // Combine group logics with their inter-group combinators
+    // The combinator on each group defines how it connects to the NEXT group
+    let combinedLogic: any = groupLogics[0];
+
+    for (let i = 1; i < groupLogics.length; i++) {
+      const prevGroup = activeGroups[i - 1];
+      const combinator = prevGroup.combinator; // 'and' or 'or'
+
+      combinedLogic = {
+        [combinator]: [combinedLogic, groupLogics[i]]
+      };
+    }
+
+    console.log('Debug - Combined Logic:', JSON.stringify(combinedLogic, null, 2));
 
     let debugLogged = false;
 
@@ -232,9 +250,9 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
       }
 
       let matchesLogic = true;
-      if (query.rules.length > 0) {
+      if (activeGroups.length > 0) {
         try {
-          matchesLogic = jsonLogic.apply(logic, data);
+          matchesLogic = jsonLogic.apply(combinedLogic, data);
         } catch (e) {
           console.error('Filter error:', e);
           matchesLogic = true;
@@ -278,6 +296,16 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
 
   updateGroupQuery: (groupId, query) => {
     const { filterGroups } = get();
+
+    if (query.rules.length === 0 && filterGroups.length > 1) {
+      set({
+        filterGroups:
+          filterGroups.filter(g => g.id !== groupId)
+      });
+      get().applyFilters();
+      return;
+    }
+
     set({
       filterGroups: filterGroups.map(g =>
         g.id === groupId ? { ...g, query } : g

@@ -71,15 +71,20 @@ export function FilterGroupManager() {
 
             {/* Control Bar - Bottom */}
             <div className="flex justify-between items-center mt-2 px-2">
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={addFilterGroup}
-                    className="flex items-center gap-1"
-                >
-                    <Plus className="h-4 w-4" />
-                    <span>Group</span>
-                </Button>
+                {/* Only show "Group" button if the default pool (first group) has a query */}
+                {filterGroups.length > 0 && filterGroups[0].query.rules.length > 0 ? (
+                    <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={addFilterGroup}
+                        className="flex items-center gap-1"
+                    >
+                        <Plus className="h-4 w-4" />
+                        <span>Group</span>
+                    </Button>
+                ) : (
+                    <div /> /* Spacer to keep layout if button is hidden */
+                )}
                 <div className="flex gap-2">
                     <Button
                         variant="secondary"
