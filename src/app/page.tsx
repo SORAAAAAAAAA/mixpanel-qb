@@ -29,7 +29,7 @@ export default function Home() {
   }, [allUsers.length, initializeUsers]);
 
   return (
-    <div className="flex h-screen w-full flex-col bg-background">
+    <div className="flex w-full flex-col bg-background">
       <Header
         userCount={allUsers.length}
         visibleColumnsCount={7}
@@ -48,7 +48,7 @@ export default function Home() {
           )}
 
           {/* Results Table */}
-          <div className="flex-1 overflow-hidden rounded-xl">
+          <div className="h-[600px] shrink-0 overflow-hidden rounded-xl border border-border">
             <ResultsTable users={filteredUsers} />
           </div>
         </div>
