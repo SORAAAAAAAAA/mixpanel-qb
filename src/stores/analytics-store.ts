@@ -3,7 +3,6 @@ import { RuleGroupType } from 'react-querybuilder';
 import jsonLogic from 'json-logic-js';
 import { MixpanelProfile } from '@/types/analytics';
 import { formatQuery } from 'react-querybuilder';
-import { generateUsers } from '@/data/mockFactory';
 
 // Maps the user profile to a flattened, normalized structure for consistent filtering logic
 const mapUserToFilterData = (user: MixpanelProfile): Record<string, any> => ({

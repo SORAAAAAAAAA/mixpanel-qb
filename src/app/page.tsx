@@ -7,7 +7,7 @@ import { useAnalyticsStore } from '@/stores/analytics-store';
 import QueryBuilder from '@/components/query-builder/QueryBuilder';
 import Button from '@/components/ui/Button';
 import { ButtonCard } from '@/components/ui/ButtonCard';
-import { generateUsers } from '@/data/mockFactory';
+import { getUsers } from '@/lib/api';
 
 
 export default function Home() {
@@ -17,11 +17,15 @@ export default function Home() {
   const setQuery = useAnalyticsStore((state) => state.setQuery);
   const initializeUsers = useAnalyticsStore((state) => state.initializeUsers);
 
-  // Generate users on client-side mount to avoid hydration mismatch
+  // Fetch users from API on client-side mount
   useEffect(() => {
-    if (allUsers.length === 0) {
-      initializeUsers(generateUsers(100));
-    }
+    const fetchUsers = async () => {
+      if (allUsers.length === 0) {
+        const users = await getUsers();
+        initializeUsers(users);
+      }
+    };
+    fetchUsers();
   }, [allUsers.length, initializeUsers]);
 
   return (
