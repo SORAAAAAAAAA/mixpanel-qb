@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import { ResultsTable } from '@/components/results/ResultsTable';
 import { useAnalyticsStore } from '@/stores/analytics-store';
-import QueryBuilder from '@/components/query-builder/QueryBuilder';
+import { FilterGroupManager } from '@/components/query-builder/FilterGroupManager';
 import Button from '@/components/ui/Button';
 import { ButtonCard } from '@/components/ui/ButtonCard';
 import { getUsers } from '@/lib/api';
@@ -39,20 +39,11 @@ export default function Home() {
 
       <main className="flex-1 overflow-hidden p-6">
         <div className="flex h-full flex-col gap-4">
-          {/* Filter Section */}
+          {/* Filter Section - using FilterGroupManager for multiple groups */}
 
           {isFilterVisible && (
             <>
-              <QueryBuilder />
-
-              <div className="flex justify-end gap-2">
-                <Button variant="secondary" size="sm">
-                  <ButtonCard label="Clear all" />
-                </Button>
-                <Button variant="primary" size="sm">
-                  <ButtonCard label="Save as" />
-                </Button>
-              </div>
+              <FilterGroupManager />
             </>
           )}
 

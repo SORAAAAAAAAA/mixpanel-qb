@@ -19,14 +19,30 @@ import { useAnalyticsStore } from '@/stores/analytics-store';
 import { RuleGroupType } from 'react-querybuilder';
 import { PropertyMenuCategory } from '@/lib/constants';
 
-export default function QueryBuilder() {
+interface QueryBuilderProps {
+  groupId?: string; // Optional - when provided, manages a specific filter group
+  roundedTop?: boolean;
+  roundedBottom?: boolean;
+}
+
+export default function QueryBuilder({ groupId, roundedTop = true, roundedBottom = true }: QueryBuilderProps) {
   const [hoveredProperty, setHoveredProperty] = useState<FilterProperty | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<PropertyMenuCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const query = useAnalyticsStore((state) => state.query);
-  const setQuery = useAnalyticsStore((state) => state.setQuery);
+  // Get the appropriate query based on whether we're using groups or legacy single query
+  const filterGroups = useAnalyticsStore((state) => state.filterGroups);
+  const updateGroupQuery = useAnalyticsStore((state) => state.updateGroupQuery);
+  const legacyQuery = useAnalyticsStore((state) => state.query);
+  const setLegacyQuery = useAnalyticsStore((state) => state.setQuery);
+
+  // Find the group's query if groupId is provided, otherwise use legacy query
+  const currentGroup = groupId ? filterGroups.find(g => g.id === groupId) : null;
+  const query = currentGroup?.query ?? legacyQuery;
+  const setQuery = groupId
+    ? (newQuery: RuleGroupType) => updateGroupQuery(groupId, newQuery)
+    : setLegacyQuery;
 
   // Checks if there are any active rules to determine if the query builder should be shown
   const hasFilters = query.rules.length > 0;
@@ -62,11 +78,11 @@ export default function QueryBuilder() {
   };
 
   return (
-    <QueryBuilderContainer>
+    <QueryBuilderContainer groupId={groupId} roundedTop={roundedTop} roundedBottom={roundedBottom}>
       {/* Show existing filters using QueryBuilderWrapper */}
       {hasFilters && (
         <div className="w-full">
-          <QueryBuilderWrapper />
+          <QueryBuilderWrapper groupId={groupId} />
         </div>
       )}
 

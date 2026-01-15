@@ -218,3 +218,103 @@
   color: var(--muted-foreground);
   font-weight: 400;
 }
+
+/* ============ Query Builder Mixpanel Styles ============ */
+
+.query-builder-wrapper {
+  width: 100%;
+}
+
+/* Hide default RQB header (combinator selector at top level) */
+.mixpanel-qb>.mixpanel-rule-group>.mixpanel-header {
+  display: none;
+}
+
+/* Style the rule group body */
+.mixpanel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Individual rule styling */
+.mixpanel-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+/* Add "where" prefix to first rule */
+.mixpanel-rule::before {
+  content: 'where';
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin-right: 0.25rem;
+}
+
+/* Subsequent rules show "and" */
+.mixpanel-rule:not(:first-child)::before {
+  content: 'and';
+}
+
+/* ============ Nested Group Styles ============ */
+
+/* Nested rule group container */
+.mixpanel-rule-group .mixpanel-rule-group {
+  position: relative;
+  margin: 0.75rem 0;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--background);
+}
+
+/* Show header for nested groups (contains the combinator toggle) */
+.mixpanel-rule-group .mixpanel-rule-group>.mixpanel-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* ============ AND/OR Toggle Button ============ */
+
+.combinator-toggle {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 0.5rem 0;
+}
+
+.combinator-toggle.and {
+  background: #4f44e0;
+  color: white;
+}
+
+.combinator-toggle.and:hover {
+  background: #5b50ed;
+}
+
+.combinator-toggle.or {
+  background: #374151;
+  color: white;
+}
+
+.combinator-toggle.or:hover {
+  background: #4b5563;
+}
+
+.combinator-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Position the combinator toggle between groups */
+.mixpanel-body>.combinator-toggle {
+  align-self: center;
+}

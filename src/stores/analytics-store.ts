@@ -52,10 +52,17 @@ const mapUserToFilterData = (user: MixpanelProfile): Record<string, any> => ({
   'cohort-dad': false,
 });
 
+export interface FilterGroup {
+  id: string;
+  query: RuleGroupType;
+  combinator: 'and' | 'or'; // Combinator for connecting TO the next group
+}
+
 export interface AnalyticsStore {
   allUsers: MixpanelProfile[];
   filteredUsers: MixpanelProfile[];
   query: RuleGroupType;
+  filterGroups: FilterGroup[];
   visibleColumns: string[];
   searchQuery: string;
 
@@ -67,10 +74,22 @@ export interface AnalyticsStore {
   initializeUsers: (users: MixpanelProfile[]) => void;
   applyFilters: () => void;
   getSampleValue: (propertyId: string) => string;
+
+  // Filter group actions
+  addFilterGroup: () => void;
+  removeFilterGroup: (groupId: string) => void;
+  updateGroupQuery: (groupId: string, query: RuleGroupType) => void;
+  toggleGroupCombinator: (groupId: string) => void;
+  clearAllGroups: () => void;
 }
 
 // Initial empty query
 const initialQuery: RuleGroupType = { combinator: 'and', rules: [] };
+const initialFilterGroup: FilterGroup = {
+  id: 'default-group',
+  query: initialQuery,
+  combinator: 'and',
+};
 import { defaultVisibleColumnIds } from '@/components/results/columns';
 
 
@@ -80,6 +99,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
   allUsers: [],
   filteredUsers: [],
   query: initialQuery,
+  filterGroups: [initialFilterGroup],
   visibleColumns: defaultVisibleColumnIds,
   searchQuery: '',
 
@@ -234,5 +254,57 @@ export const useAnalyticsStore = create<AnalyticsStore>()((set, get) => ({
     });
 
     set({ filteredUsers: filtered });
+  },
+
+  // ============ Filter Group Actions ============
+
+  addFilterGroup: () => {
+    const { filterGroups } = get();
+    const newGroup: FilterGroup = {
+      id: `group-${Date.now()}`,
+      query: { combinator: 'and', rules: [] },
+      combinator: 'and',
+    };
+    set({ filterGroups: [...filterGroups, newGroup] });
+  },
+
+  removeFilterGroup: (groupId) => {
+    const { filterGroups } = get();
+    // Prevent removing the last group
+    if (filterGroups.length <= 1) return;
+    set({ filterGroups: filterGroups.filter(g => g.id !== groupId) });
+    get().applyFilters();
+  },
+
+  updateGroupQuery: (groupId, query) => {
+    const { filterGroups } = get();
+    set({
+      filterGroups: filterGroups.map(g =>
+        g.id === groupId ? { ...g, query } : g
+      ),
+    });
+    get().applyFilters();
+  },
+
+  toggleGroupCombinator: (groupId) => {
+    const { filterGroups } = get();
+    set({
+      filterGroups: filterGroups.map(g =>
+        g.id === groupId
+          ? { ...g, combinator: g.combinator === 'and' ? 'or' : 'and' }
+          : g
+      ),
+    });
+    get().applyFilters();
+  },
+
+  clearAllGroups: () => {
+    const initialGroup: FilterGroup = {
+      id: 'default-group',
+      query: { combinator: 'and', rules: [] },
+      combinator: 'and',
+    };
+    set({ filterGroups: [initialGroup], query: { combinator: 'and', rules: [] } });
+    get().applyFilters();
   },
 }));

@@ -11,7 +11,13 @@ import { DndContext, useDraggable, DragEndEvent } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import Button from '@/components/ui/Button'
 
-function DraggableCard({ children }: { children: React.ReactNode }) {
+interface DraggableCardProps {
+  children: React.ReactNode;
+  roundedTop?: boolean;
+  roundedBottom?: boolean;
+}
+
+function DraggableCard({ children, roundedTop = true, roundedBottom = true }: DraggableCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: 'query-builder-card',
   })
@@ -21,10 +27,13 @@ function DraggableCard({ children }: { children: React.ReactNode }) {
     cursor: isDragging ? 'grabbing' : 'auto',
   }
 
+  // Build border-radius classes based on props (using ! to override Card defaults)
+  const radiusClasses = `${roundedTop ? '!rounded-t-xl' : '!rounded-t-none'} ${roundedBottom ? '!rounded-b-xl' : '!rounded-b-none'}`;
+
   return (
     <Card
       ref={setNodeRef}
-      className="flex flex-col pt-0  pb-2 gap-1 w-full bg-background transition-shadow"
+      className={`flex flex-col !py-2 !gap-1 w-full bg-background transition-shadow ${radiusClasses}`}
       style={style}
     >
       <CardHeader className="flex flex-row items-center px-2 p-0">
@@ -45,7 +54,19 @@ function DraggableCard({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function QueryBuilderContainer({ children }: { children: React.ReactNode }) {
+interface QueryBuilderContainerProps {
+  children: React.ReactNode;
+  groupId?: string;
+  roundedTop?: boolean;
+  roundedBottom?: boolean;
+}
+
+export function QueryBuilderContainer({
+  children,
+  groupId,
+  roundedTop = true,
+  roundedBottom = true,
+}: QueryBuilderContainerProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isMounted, setIsMounted] = useState(false)
 
@@ -63,7 +84,7 @@ export function QueryBuilderContainer({ children }: { children: React.ReactNode 
   if (!isMounted) {
     return (
       <div className="w-full">
-        <DraggableCard>{children}</DraggableCard>
+        <DraggableCard roundedTop={roundedTop} roundedBottom={roundedBottom}>{children}</DraggableCard>
       </div>
     )
   }
@@ -71,8 +92,9 @@ export function QueryBuilderContainer({ children }: { children: React.ReactNode 
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="w-full" style={{ transform: `translate(${position.x}px, ${position.y}px)` }}>
-        <DraggableCard>{children}</DraggableCard>
+        <DraggableCard roundedTop={roundedTop} roundedBottom={roundedBottom}>{children}</DraggableCard>
       </div>
     </DndContext>
   )
 }
+

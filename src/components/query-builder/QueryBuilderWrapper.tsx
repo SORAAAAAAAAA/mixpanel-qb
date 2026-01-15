@@ -9,8 +9,8 @@ import {
     MixpanelOperatorSelector,
     MixpanelValueEditor,
     MixpanelRemoveButton,
+    MixpanelCombinatorSelector,
 } from './controls';
-import './query-builder.css';
 
 // Map FilterProperty to RQB Field format
 const fields: Field[] = getAllProperties().map(p => ({
@@ -20,15 +20,25 @@ const fields: Field[] = getAllProperties().map(p => ({
 
 interface QueryBuilderWrapperProps {
     onAddRule?: (propertyId: string) => void;
+    groupId?: string;
 }
 
 /**
  * Wrapper around React Query Builder that integrates with the analytics store
  * and provides Mixpanel-styled custom controls.
  */
-export function QueryBuilderWrapper({ onAddRule }: QueryBuilderWrapperProps) {
-    const query = useAnalyticsStore((state) => state.query);
-    const setQuery = useAnalyticsStore((state) => state.setQuery);
+export function QueryBuilderWrapper({ onAddRule, groupId }: QueryBuilderWrapperProps) {
+    const filterGroups = useAnalyticsStore((state) => state.filterGroups);
+    const updateGroupQuery = useAnalyticsStore((state) => state.updateGroupQuery);
+    const legacyQuery = useAnalyticsStore((state) => state.query);
+    const setLegacyQuery = useAnalyticsStore((state) => state.setQuery);
+
+    // Find the group's query if groupId is provided, otherwise use legacy query
+    const currentGroup = groupId ? filterGroups.find(g => g.id === groupId) : null;
+    const query = currentGroup?.query ?? legacyQuery;
+    const setQuery = groupId
+        ? (newQuery: RuleGroupType) => updateGroupQuery(groupId, newQuery)
+        : setLegacyQuery;
 
     return (
         <div className="query-builder-wrapper">
@@ -41,6 +51,7 @@ export function QueryBuilderWrapper({ onAddRule }: QueryBuilderWrapperProps) {
                     operatorSelector: MixpanelOperatorSelector,
                     valueEditor: MixpanelValueEditor,
                     removeRuleAction: MixpanelRemoveButton,
+                    combinatorSelector: MixpanelCombinatorSelector,
                     // Hide default add buttons - use custom property dropdown
                     addRuleAction: () => null,
                     addGroupAction: () => null,
