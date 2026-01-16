@@ -46,6 +46,7 @@ export function QueryBuilderWrapper({ onAddRule, groupId }: QueryBuilderWrapperP
                 fields={fields}
                 query={query}
                 onQueryChange={setQuery}
+                showCombinatorsBetweenRules={true}
                 controlElements={{
                     fieldSelector: MixpanelFieldSelector,
                     operatorSelector: MixpanelOperatorSelector,

@@ -230,11 +230,12 @@
   display: none;
 }
 
-/* Style the rule group body */
+/* Style the rule group body - CSS Grid to align combinator + rule on same row */
 .mixpanel-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 0.5rem;
+  align-items: center;
 }
 
 /* Individual rule styling */
@@ -245,17 +246,28 @@
   padding: 0.25rem 0;
 }
 
-/* Add "where" prefix to first rule */
-.mixpanel-rule::before {
+/* First rule spans full width */
+.mixpanel-body>.mixpanel-rule:first-of-type {
+  grid-column: 1 / -1;
+}
+
+/* Inline combinator in column 1 */
+.mixpanel-body>.betweenRules {
+  grid-column: 1;
+  justify-self: start;
+}
+
+/* Subsequent rules in column 2 */
+.mixpanel-body>.mixpanel-rule:not(:first-of-type) {
+  grid-column: 2;
+}
+
+/* Add "where" prefix to first rule only */
+.mixpanel-rule:first-of-type::before {
   content: 'where';
   font-size: 0.75rem;
   color: var(--muted-foreground);
   margin-right: 0.25rem;
-}
-
-/* Subsequent rules show "and" */
-.mixpanel-rule:not(:first-child)::before {
-  content: 'and';
 }
 
 /* ============ Nested Group Styles ============ */
@@ -279,16 +291,15 @@
 
 /* ============ AND/OR Toggle Button ============ */
 
+/* Base combinator toggle - used for group combinators (between filter groups) */
 .combinator-toggle {
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 600;
   border: none;
   border-radius: 0.25rem;
-  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin: 0.5rem 0;
 }
 
 .combinator-toggle.and {
@@ -314,7 +325,16 @@
   cursor: not-allowed;
 }
 
-/* Position the combinator toggle between groups */
+/* Inline combinator between rules - looks like muted "where" text */
 .mixpanel-body>.combinator-toggle {
-  align-self: center;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-weight: 400;
+  padding: 0;
+  margin: 0 0.25rem;
+}
+
+.mixpanel-body>.combinator-toggle:hover {
+  background: transparent;
+  color: var(--foreground);
 }
